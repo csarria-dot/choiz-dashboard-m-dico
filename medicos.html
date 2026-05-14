@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Médicos — Choiz Analytics</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:        #F7F6F2;
+  --surface:   #FFFFFF;
+  --surface2:  #F0EEE9;
+  --border:    rgba(0,0,0,0.07);
+  --border-md: rgba(0,0,0,0.12);
+  --text:      #1A1917;
+  --muted:     #7A7870;
+  --faint:     #B5B3AC;
+  --blue:      #185FA5;
+  --green:     #0F6E56;
+  --amber:     #BA7517;
+  --red:       #993C1D;
+  --r-md: 10px; --r-lg: 14px;
+}
+body { background: var(--bg); color: var(--text); font-family: 'Geist Mono', monospace; font-size: 13px; line-height: 1.6; }
+.page { max-width: 1060px; margin: 0 auto; padding: 0 28px 80px; }
+
+header { padding: 44px 0 32px; display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; border-bottom: 1px solid var(--border-md); margin-bottom: 28px; flex-wrap: wrap; }
+.h-title { font-family: 'Instrument Serif', serif; font-size: clamp(2rem,4vw,2.8rem); font-style: italic; line-height: 1; letter-spacing: -0.02em; font-weight: 400; }
+.h-title em { font-style: normal; color: var(--muted); }
+.h-sub { margin-top: 7px; font-size: 11px; color: var(--muted); letter-spacing: 0.05em; }
+.badge { display: inline-block; font-size: 11px; color: var(--muted); background: var(--surface); border: 1px solid var(--border-md); padding: 5px 13px; border-radius: 20px; }
+
+.filter-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-bottom: 24px; }
+.filter-label { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-right: 4px; }
+.wk-btn { font-family: 'Geist Mono', monospace; font-size: 11px; padding: 5px 13px; border-radius: 20px; border: 1px solid var(--border-md); background: var(--surface); color: var(--muted); cursor: pointer; transition: all .12s; white-space: nowrap; }
+.wk-btn:hover { background: var(--surface2); color: var(--text); }
+.wk-btn.active { background: var(--text); border-color: var(--text); color: var(--bg); }
+.wk-btn.partial { border-style: dashed; }
+
+.kpi-strip { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-bottom: 28px; }
+.kpi { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 18px 20px; position: relative; overflow: hidden; }
+.kpi::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px; }
+.kpi:nth-child(1)::after { background: var(--blue); }
+.kpi:nth-child(2)::after { background: var(--green); }
+.kpi:nth-child(3)::after { background: var(--amber); }
+.kpi-lbl { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 7px; }
+.kpi-val { font-family: 'Instrument Serif', serif; font-size: 2.2rem; line-height: 1; letter-spacing: -0.02em; }
+.kpi:nth-child(1) .kpi-val { color: var(--blue); }
+.kpi:nth-child(2) .kpi-val { color: var(--green); }
+.kpi:nth-child(3) .kpi-val { color: var(--amber); }
+.kpi-unit { font-family: 'Geist Mono', monospace; font-size: 0.85rem; color: var(--muted); margin-left: 3px; }
+.kpi-sub { font-size: 11px; color: var(--faint); margin-top: 4px; }
+
+.section { margin-bottom: 24px; }
+.section-hd { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.section-ttl { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+
+.chart-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 18px 20px; }
+.chart-ttl { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
+.chart-wrap { position: relative; width: 100%; }
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+.outlier-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.outlier-col-title { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 10px; }
+.outlier-col-title.high { color: var(--red); }
+.outlier-col-title.low  { color: var(--green); }
+.outlier-list { display: flex; flex-direction: column; gap: 8px; }
+.oi { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 14px 16px; }
+.oi.high { border-left: 3px solid var(--red); }
+.oi.low  { border-left: 3px solid var(--green); }
+.oi-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 8px; }
+.oi-client { font-size: 12px; font-weight: 500; color: var(--text); }
+.oi-week { font-size: 10px; color: var(--muted); margin-top: 2px; }
+.oi-days { font-family: 'Instrument Serif', serif; font-size: 1.5rem; line-height: 1; white-space: nowrap; }
+.oi-days.high { color: var(--red); }
+.oi-days.low  { color: var(--green); }
+.oi-days-lbl { font-size: 10px; color: var(--muted); text-align: right; }
+.oi-reason { font-size: 11px; color: var(--muted); line-height: 1.5; padding-top: 8px; border-top: 1px solid var(--border); }
+.oi-reason strong { color: var(--text); font-weight: 500; }
+
+.tbl-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); overflow: hidden; }
+table { width: 100%; border-collapse: collapse; font-size: 12px; }
+thead tr { border-bottom: 1px solid var(--border-md); }
+th { padding: 9px 13px; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 400; text-align: right; background: var(--surface2); white-space: nowrap; }
+th:first-child { text-align: left; }
+tbody tr { border-bottom: 1px solid var(--border); transition: background .1s; }
+tbody tr:last-child { border-bottom: none; }
+tbody tr:hover { background: var(--surface2); }
+td { padding: 10px 13px; text-align: right; white-space: nowrap; }
+td:first-child { text-align: left; }
+td.danger { color: var(--red); font-weight: 500; }
+td.ok     { color: var(--green); }
+td.muted  { color: var(--faint); }
+.partial-tag { font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--amber); background: rgba(186,117,23,0.08); border: 1px solid rgba(186,117,23,0.2); padding: 2px 7px; border-radius: 10px; margin-left: 6px; vertical-align: middle; }
+
+footer { border-top: 1px solid var(--border-md); padding: 20px 0; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-top: 40px; }
+footer p { font-size: 10px; color: var(--faint); }
+.footer-badge { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--blue); background: rgba(24,95,165,0.07); border: 1px solid rgba(24,95,165,0.15); padding: 4px 12px; border-radius: 20px; }
+
+@keyframes fadeUp { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+.kpi { animation: fadeUp .35s both; }
+.kpi:nth-child(1) { animation-delay:.04s; }
+.kpi:nth-child(2) { animation-delay:.08s; }
+.kpi:nth-child(3) { animation-delay:.12s; }
+.chart-card  { animation: fadeUp .35s .14s both; }
+.outlier-grid { animation: fadeUp .35s .18s both; }
+.tbl-wrap    { animation: fadeUp .35s .20s both; }
+
+@media (max-width: 680px) {
+  .page { padding: 0 16px 60px; }
+  .kpi-strip, .two-col, .outlier-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<header>
+  <div>
+    <h1 class="h-title">Tiempos de aprobación <em>/ Choiz</em></h1>
+    <p class="h-sub">Desde pago hasta aprobación médica · 6 abr – 14 may 2026</p>
+  </div>
+  <span class="badge" id="badge-date">Actualizado: —</span>
+</header>
+
+<div class="filter-row">
+  <span class="filter-label">Semana</span>
+  <div id="filter-btns"></div>
+</div>
+
+<div class="kpi-strip" id="kpi-strip"></div>
+
+<div class="two-col section">
+  <div class="chart-card">
+    <p class="chart-ttl">Promedio días de aprobación</p>
+    <div class="chart-wrap" style="height:210px;"><canvas id="c-avg" role="img" aria-label="Promedio de días entre pago y aprobación médica por semana."></canvas></div>
+  </div>
+  <div class="chart-card">
+    <p class="chart-ttl">Mediana días de aprobación</p>
+    <div class="chart-wrap" style="height:210px;"><canvas id="c-med" role="img" aria-label="Mediana de días entre pago y aprobación médica por semana."></canvas></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-hd" style="margin-bottom:12px;">
+    <span class="section-ttl">Outliers — casos extremos del período</span>
+    <span style="font-size:10px;color:var(--faint);">Top 5 mayor y menor espera · desde pago hasta aprobación</span>
+  </div>
+  <div class="outlier-grid">
+    <div>
+      <p class="outlier-col-title high">Mayor espera</p>
+      <div class="outlier-list" id="outlier-high"></div>
+    </div>
+    <div>
+      <p class="outlier-col-title low">Menor espera</p>
+      <div class="outlier-list" id="outlier-low"></div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-hd" style="margin-bottom:10px;">
+    <span class="section-ttl">Detalle estadístico semanal</span>
+    <span style="font-size:10px;color:var(--faint);">Todos los valores en días</span>
+  </div>
+  <div class="tbl-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Semana</th>
+          <th>Aprobaciones</th>
+          <th>Promedio</th>
+          <th>Mediana</th>
+          <th>P25</th>
+          <th>P75</th>
+          <th>P90</th>
+          <th>Outlier máx.</th>
+          <th>Outlier mín.</th>
+        </tr>
+      </thead>
+      <tbody id="tbl-body"></tbody>
+    </table>
+  </div>
+</div>
+
+<footer>
+  <p>Fuente: Power BI Choiz · fct_form_status_history · days_to_approve_client_since_first_state_movement</p>
+  <span class="footer-badge">Choiz Analytics</span>
+</footer>
+
+</div>
+<script>
+const RAW = [
+  { ws:'2026-04-06', avg:0.91, med:0.77, p25:0.55, p75:1.40, p90:1.70, max:2.40,  min:0.05, n:14,  partial:false },
+  { ws:'2026-04-13', avg:0.81, med:0.55, p25:0.13, p75:1.02, p90:2.05, max:4.73,  min:0.00, n:198, partial:false },
+  { ws:'2026-04-20', avg:1.34, med:0.64, p25:0.21, p75:1.71, p90:3.85, max:11.09, min:0.00, n:308, partial:false },
+  { ws:'2026-04-27', avg:1.51, med:0.65, p25:0.13, p75:1.96, p90:4.07, max:13.57, min:0.00, n:267, partial:false },
+  { ws:'2026-05-04', avg:1.48, med:0.63, p25:0.18, p75:1.51, p90:3.73, max:14.52, min:0.01, n:257, partial:false },
+  { ws:'2026-05-11', avg:1.34, med:0.52, p25:0.07, p75:0.86, p90:3.72, max:21.47, min:0.00, n:148, partial:true  },
+];
+
+const WEEKS = RAW.map(r => r.ws);
+
+const OUTLIERS_HIGH = [
+  {
+    client: '204831', week: '11/05 – 14/05', days: 21.47,
+    reason: 'Pago validado el 20/04. <strong>21 días en VALIDATE sin revisión médica</strong> hasta la aprobación el 12/05. Caso de mayor demora del período — la solicitud estuvo activa durante tres semanas sin movimiento.'
+  },
+  {
+    client: '204692', week: '04/05 – 10/05', days: 14.52,
+    reason: 'Pago validado el 19/04. <strong>14 días entre VALIDATE y APPROVED</strong>. Aprobado el 04/05. Sin comentarios registrados en el historial que expliquen la demora.'
+  },
+  {
+    client: '205779', week: '11/05 – 14/05', days: 14.51,
+    reason: 'Pago validado el 28/04. <strong>14 días en espera de revisión</strong> hasta el 13/05. Patrón similar al anterior: solicitud válida sin acción médica por dos semanas.'
+  },
+  {
+    client: '204914', week: '04/05 – 10/05', days: 14.23,
+    reason: 'Pago validado el 21/04. <strong>14 días hasta la aprobación</strong> el 05/05. Mismo patrón de demora prolongada en etapa médica sin registro de causa.'
+  },
+  {
+    client: '203920', week: '27/04 – 03/05', days: 13.57,
+    reason: 'Pago validado el 13/04. <strong>13 días entre validación y aprobación</strong> el 27/04. Primer caso del período con demora significativa en etapa médica.'
+  },
+];
+
+const OUTLIERS_LOW = [
+  {
+    client: '207296', week: '11/05 – 14/05', days: 0.00,
+    reason: 'Pago validado y aprobado el mismo día (13/05). Resolución en menos de una hora desde el primer movimiento.'
+  },
+  {
+    client: '200239', week: '13/04 – 19/04', days: 0.00,
+    reason: 'Pago validado y aprobado el 19/04 en el mismo evento. Flujo sin ninguna espera en etapa médica.'
+  },
+  {
+    client: '203843', week: '13/04 – 19/04', days: 0.00,
+    reason: 'Validación y aprobación el 13/04 en una sola sesión. Tiempo de revisión prácticamente instantáneo.'
+  },
+  {
+    client: '207110', week: '11/05 – 14/05', days: 0.00,
+    reason: 'Pago validado y aprobado el 11/05. Mismo patrón de aprobación inmediata post-pago.'
+  },
+  {
+    client: '204170', week: '20/04 – 26/04', days: 0.00,
+    reason: 'Validación y aprobación el 21/04 sin demora. La solicitud fue revisada en el mismo ciclo de trabajo.'
+  },
+];
+
+const fmt     = (v, d=1) => v == null ? '—' : (+v).toFixed(d);
+const lbl     = (iso, partial) => { const dt = new Date(iso); return `${dt.getDate()}/${dt.getMonth()+1}${partial?' *':''}`; };
+const wkRange = (iso, partial) => {
+  const s = new Date(iso);
+  const e = partial ? new Date('2026-05-14') : new Date(iso);
+  if (!partial) e.setDate(e.getDate()+6);
+  return `${s.getDate()}/${s.getMonth()+1} – ${e.getDate()}/${e.getMonth()+1}`;
+};
+
+function aggAll(weeks) {
+  const rows = RAW.filter(r => weeks.includes(r.ws));
+  if (!rows.length) return null;
+  const N = rows.reduce((s,r) => s + r.n, 0);
+  return {
+    avg: rows.reduce((s,r) => s + r.avg * r.n, 0) / N,
+    med: rows.reduce((s,r) => s + r.med, 0) / rows.length,
+    p25: rows.reduce((s,r) => s + r.p25, 0) / rows.length,
+    p75: rows.reduce((s,r) => s + r.p75, 0) / rows.length,
+    p90: rows.reduce((s,r) => s + r.p90, 0) / rows.length,
+    max: Math.max(...rows.map(r => r.max)),
+    min: Math.min(...rows.map(r => r.min)),
+    n: N
+  };
+}
+
+let currentWk = 'all';
+let charts = {};
+
+function makeSingle(field) {
+  const sel = currentWk === 'all' ? WEEKS : [currentWk];
+  const data = WEEKS.map(w => {
+    if (!sel.includes(w)) return null;
+    const r = RAW.find(x => x.ws === w);
+    return r ? +r[field].toFixed(2) : null;
+  });
+  const partial = RAW.find(r => r.ws === '2026-05-11');
+  return [{
+    label: field === 'avg' ? 'Promedio' : 'Mediana',
+    data,
+    borderColor: '#185FA5',
+    backgroundColor: 'rgba(24,95,165,0.07)',
+    pointBackgroundColor: WEEKS.map(w => RAW.find(r=>r.ws===w)?.partial ? '#BA7517' : '#185FA5'),
+    pointBorderColor:     WEEKS.map(w => RAW.find(r=>r.ws===w)?.partial ? '#BA7517' : '#185FA5'),
+    tension: 0.35, fill: true, spanGaps: true,
+    borderWidth: 2, pointRadius: 4, pointHoverRadius: 6,
+    segment: {
+      borderDash: ctx => RAW[ctx.p1DataIndex]?.partial ? [4,3] : undefined
+    }
+  }];
+}
+
+const baseOpts = {
+  responsive: true, maintainAspectRatio: false,
+  plugins: {
+    legend: { display: false },
+    tooltip: {
+      backgroundColor: '#fff', borderColor: 'rgba(0,0,0,0.1)', borderWidth: 1,
+      titleColor: '#1A1917', bodyColor: '#7A7870', padding: 10,
+      callbacks: {
+        label: ctx => ` ${fmt(ctx.parsed.y)} días`,
+        afterLabel: ctx => RAW[ctx.dataIndex]?.partial ? ' (semana parcial)' : ''
+      }
+    }
+  },
+  scales: {
+    x: { grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: { family:"'Geist Mono',monospace", size:10 }, color:'#7A7870' } },
+    y: { grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: { family:"'Geist Mono',monospace", size:10 }, color:'#7A7870' }, beginAtZero: true }
+  }
+};
+
+function buildCharts() {
+  const labels = RAW.map(r => lbl(r.ws, r.partial));
+  ['c-avg','c-med'].forEach((cid, i) => {
+    if (charts[cid]) charts[cid].destroy();
+    charts[cid] = new Chart(document.getElementById(cid), {
+      type: 'line',
+      data: { labels, datasets: makeSingle(i === 0 ? 'avg' : 'med') },
+      options: { ...baseOpts }
+    });
+  });
+}
+
+function refreshCharts() {
+  ['c-avg','c-med'].forEach((cid, i) => {
+    const ch = charts[cid];
+    if (!ch) return;
+    ch.data.datasets = makeSingle(i === 0 ? 'avg' : 'med');
+    ch.update();
+  });
+}
+
+function renderKPIs() {
+  const weeks = currentWk === 'all' ? WEEKS : [currentWk];
+  const d = aggAll(weeks);
+  if (!d) return;
+  document.getElementById('kpi-strip').innerHTML = `
+    <div class="kpi">
+      <p class="kpi-lbl">Promedio de aprobación médica</p>
+      <p class="kpi-val">${fmt(d.avg)}<span class="kpi-unit">d</span></p>
+      <p class="kpi-sub">mediana ${fmt(d.med)} d · P90 ${fmt(d.p90)} d</p>
+    </div>
+    <div class="kpi">
+      <p class="kpi-lbl">Solicitudes aprobadas</p>
+      <p class="kpi-val">${d.n.toLocaleString('es-MX')}</p>
+      <p class="kpi-sub">${weeks.length === 1 ? '1 semana' : weeks.length + ' semanas seleccionadas'}</p>
+    </div>
+    <div class="kpi">
+      <p class="kpi-lbl">Pacientes activos en seguimiento</p>
+      <p class="kpi-val">24,665</p>
+      <p class="kpi-sub">sin solicitud pendiente de aprobación</p>
+    </div>
+  `;
+}
+
+function renderTable() {
+  const weeks = currentWk === 'all' ? WEEKS : [currentWk];
+  document.getElementById('tbl-body').innerHTML = weeks.map(ws => {
+    const d = RAW.find(r => r.ws === ws);
+    if (!d) return '';
+    const partialTag = d.partial ? '<span class="partial-tag">parcial</span>' : '';
+    return `<tr>
+      <td>${wkRange(ws, d.partial)}${partialTag}</td>
+      <td>${d.n.toLocaleString('es-MX')}</td>
+      <td>${fmt(d.avg)}</td>
+      <td>${fmt(d.med)}</td>
+      <td class="muted">${fmt(d.p25)}</td>
+      <td class="muted">${fmt(d.p75)}</td>
+      <td>${fmt(d.p90)}</td>
+      <td class="danger">${fmt(d.max)}</td>
+      <td class="ok">${fmt(d.min)}</td>
+    </tr>`;
+  }).join('');
+}
+
+function renderOutliers() {
+  const mk = (o, type) => `
+    <div class="oi ${type}">
+      <div class="oi-top">
+        <div>
+          <p class="oi-client">Paciente #${o.client}</p>
+          <p class="oi-week">Sem. ${o.week}</p>
+        </div>
+        <div style="text-align:right;">
+          <p class="oi-days ${type}">${fmt(o.days)}</p>
+          <p class="oi-days-lbl">días</p>
+        </div>
+      </div>
+      <p class="oi-reason">${o.reason}</p>
+    </div>`;
+  document.getElementById('outlier-high').innerHTML = OUTLIERS_HIGH.map(o => mk(o,'high')).join('');
+  document.getElementById('outlier-low').innerHTML  = OUTLIERS_LOW.map(o  => mk(o,'low')).join('');
+}
+
+function renderFilters() {
+  const wrap = document.getElementById('filter-btns');
+  const opts = [
+    { key:'all', label:'Todas', partial: false },
+    ...RAW.map(r => ({ key:r.ws, label:`Sem. ${lbl(r.ws, false)}`, partial: r.partial }))
+  ];
+  wrap.innerHTML = opts.map(o =>
+    `<button class="wk-btn${o.key===currentWk?' active':''}${o.partial?' partial':''}" data-key="${o.key}">${o.label}${o.partial?' *':''}</button>`
+  ).join('');
+  wrap.querySelectorAll('.wk-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      currentWk = btn.dataset.key;
+      wrap.querySelectorAll('.wk-btn').forEach(b => b.classList.toggle('active', b.dataset.key===currentWk));
+      renderKPIs(); renderTable(); refreshCharts();
+    });
+  });
+}
+
+const now = new Date();
+document.getElementById('badge-date').textContent = `Actualizado: ${now.getDate()}/${now.getMonth()+1}/${now.getFullYear()}`;
+renderFilters();
+renderKPIs();
+buildCharts();
+renderTable();
+renderOutliers();
+</script>
+</body>
+</html>
