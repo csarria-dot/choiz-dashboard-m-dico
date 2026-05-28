@@ -5,240 +5,311 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Médicos — Choiz Analytics</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist+Mono:wght@300;400;500&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Geist+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-:root {
-  --bg:        #F7F6F2;
-  --surface:   #FFFFFF;
-  --surface2:  #F0EEE9;
-  --border:    rgba(0,0,0,0.07);
-  --border-md: rgba(0,0,0,0.12);
-  --text:      #1A1917;
-  --muted:     #7A7870;
-  --faint:     #B5B3AC;
-  --blue:      #185FA5;
-  --blue-bg:   #EBF2FB;
-  --green:     #1A6B3A;
-  --green-bg:  #E8F5EE;
-  --amber:     #8B5A00;
-  --amber-bg:  #FDF3DC;
-  --red:       #C0392B;
-  --red-bg:    #FDECEB;
-  --accent:    #2A5C9E;
-  --r: 8px;
-}
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: 'Geist Mono', monospace;
-  font-size: 13px;
-  line-height: 1.6;
-  padding: 32px 20px 80px;
-  min-height: 100vh;
-}
-.page-header {
-  max-width: 960px;
-  margin: 0 auto 36px;
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 16px;
-  flex-wrap: wrap;
-  border-bottom: 1.5px solid var(--border-md);
-  padding-bottom: 20px;
-}
-.page-header h1 {
-  font-family: 'Instrument Serif', serif;
-  font-size: 28px;
-  font-weight: 400;
-  letter-spacing: -0.3px;
-  color: var(--text);
-  line-height: 1.2;
-}
-.page-header h1 span { color: var(--muted); font-style: italic; }
-.badge-date {
-  font-size: 11px;
-  color: var(--muted);
-  background: var(--surface2);
-  border: 1px solid var(--border-md);
-  padding: 4px 10px;
-  border-radius: 20px;
-  white-space: nowrap;
-}
-.container { max-width: 960px; margin: 0 auto; }
-.section-label {
-  font-size: 10px;
-  font-weight: 500;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin: 28px 0 10px;
-}
-.kpi-row {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
-}
-@media (max-width: 640px) { .kpi-row { grid-template-columns: repeat(2, 1fr); } }
-.kpi {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--r);
-  padding: 14px 16px;
-}
-.kpi-label { font-size: 11px; color: var(--muted); margin-bottom: 6px; }
-.kpi-val {
-  font-family: 'Instrument Serif', serif;
-  font-size: 28px;
-  letter-spacing: -0.5px;
-  color: var(--text);
-  line-height: 1;
-}
-.kpi-sub { font-size: 11px; color: var(--faint); margin-top: 4px; }
-.kpi-delta {
-  display: inline-block;
-  font-size: 11px;
-  padding: 2px 6px;
-  border-radius: 4px;
-  margin-top: 5px;
-}
-.delta-up   { background: var(--red-bg);   color: var(--red); }
-.delta-down { background: var(--green-bg); color: var(--green); }
-.delta-neu  { background: var(--surface2); color: var(--muted); }
-.wk-filter {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-bottom: 12px;
-}
-.wk-btn {
-  font-family: 'Geist Mono', monospace;
-  font-size: 11px;
-  padding: 5px 11px;
-  border: 1px solid var(--border-md);
-  border-radius: 20px;
-  background: var(--surface);
-  color: var(--muted);
-  cursor: pointer;
-  transition: all .15s;
-}
-.wk-btn:hover { border-color: var(--accent); color: var(--accent); }
-.wk-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
-.tbl-wrap {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--r);
-  overflow: hidden;
-  overflow-x: auto;
-}
-table { width: 100%; border-collapse: collapse; font-size: 12px; }
-thead tr { background: var(--surface2); }
-th {
-  text-align: left;
-  padding: 10px 14px;
-  font-size: 10px;
-  font-weight: 500;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--muted);
-  white-space: nowrap;
-  border-bottom: 1px solid var(--border-md);
-}
-td {
-  padding: 9px 14px;
-  border-bottom: 1px solid var(--border);
-  color: var(--text);
-  white-space: nowrap;
-}
-tr:last-child td { border-bottom: none; }
-tr.active-row td { background: #F0F4FB; font-weight: 500; }
-tr.active-row td:first-child { border-left: 2.5px solid var(--accent); }
-tr.partial-row td:first-child { border-left: 2.5px solid var(--amber); }
-.chip {
-  display: inline-block;
-  padding: 2px 7px;
-  border-radius: 4px;
-  font-size: 11px;
-}
-.charts-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin: 4px 0;
-}
-@media (max-width: 640px) { .charts-row { grid-template-columns: 1fr; } }
-.chart-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--r);
-  padding: 16px;
-}
-.chart-title {
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom: 14px;
-}
-.chart-wrap { position: relative; height: 180px; }
-.outlier-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
-  gap: 8px;
-}
-.outlier-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--r);
-  padding: 12px 14px;
-}
-.outlier-dias {
-  font-family: 'Instrument Serif', serif;
-  font-size: 22px;
-  color: var(--red);
-  letter-spacing: -0.3px;
-}
-.outlier-label { font-size: 11px; color: var(--muted); margin-top: 2px; }
-.outlier-form  { font-size: 12px; color: var(--text); margin-top: 6px; font-weight: 500; }
-.legend-row { display: flex; gap: 16px; flex-wrap: wrap; margin: 8px 0 4px; }
-.legend-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--muted); }
-.legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  :root {
+    --bg:         #F0EBE1;
+    --surface:    #FAF8F4;
+    --surface2:   #EDE8DF;
+    --border:     #DDD8CF;
+    --border-md:  #C8C2B8;
+    --text:       #1C1917;
+    --muted:      #6B6560;
+    --faint:      #9B9590;
+    --accent:     #1B3A5C;
+    --accent-bg:  rgba(27,58,92,.09);
+    --red:        #A32D2D;
+    --red-bg:     #FAEAEA;
+    --green:      #2D6B3D;
+    --green-bg:   #E6F4EA;
+    --amber:      #7A4F00;
+    --amber-bg:   #FDF2DC;
+    --r:          10px;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+
+  /* ── PAGE HEADER ── */
+  .page-header {
+    padding: 32px 0 24px;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 0;
+  }
+  .page-header h1 {
+    font-family: 'Instrument Serif', serif;
+    font-size: 32px;
+    font-weight: 400;
+    letter-spacing: -0.3px;
+    color: var(--text);
+    line-height: 1.2;
+  }
+  .page-header h1 span {
+    color: var(--muted);
+    font-style: italic;
+  }
+  .badge-date {
+    font-size: 11px;
+    color: var(--muted);
+    background: var(--surface);
+    border: 1px solid var(--border-md);
+    padding: 4px 10px;
+    border-radius: 20px;
+    white-space: nowrap;
+  }
+
+  /* ── LAYOUT ── */
+  .container { max-width: 960px; margin: 0 auto; padding: 0 28px 48px; }
+
+  .section-label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 28px 0 10px;
+  }
+
+  /* ── KPI ROW ── */
+  .kpi-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 4px;
+  }
+  @media (max-width: 640px) { .kpi-row { grid-template-columns: repeat(2, 1fr); } }
+  .kpi {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    padding: 14px 16px;
+  }
+  .kpi-label { font-size: 11px; color: var(--muted); margin-bottom: 6px; }
+  .kpi-val {
+    font-family: 'Instrument Serif', serif;
+    font-size: 30px;
+    letter-spacing: -0.5px;
+    color: var(--text);
+    line-height: 1;
+  }
+  .kpi-sub { font-size: 11px; color: var(--faint); margin-top: 4px; }
+  .kpi-delta {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 2px 7px;
+    border-radius: 4px;
+    margin-top: 5px;
+  }
+  .delta-bad  { background: var(--red-bg);   color: var(--red);   }
+  .delta-good { background: var(--green-bg); color: var(--green); }
+  .delta-neu  { background: var(--surface2); color: var(--muted); }
+
+  /* ── WEEK FILTER ── */
+  .wk-filter {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 12px;
+  }
+  .wk-btn {
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    font-weight: 400;
+    padding: 5px 13px;
+    border: 1px solid var(--border-md);
+    border-radius: 20px;
+    background: var(--surface);
+    color: var(--muted);
+    cursor: pointer;
+    transition: all .15s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .wk-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .wk-btn.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+  .live-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: #E8453C;
+    animation: pulse 2s infinite;
+    flex-shrink: 0;
+  }
+  @keyframes pulse {
+    0%,100% { opacity:1; transform:scale(1); }
+    50%      { opacity:.5; transform:scale(1.3); }
+  }
+
+  /* ── CHARTS ── */
+  .chart-legend {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 6px;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .legend-dot {
+    width: 9px; height: 9px; border-radius: 50%;
+  }
+
+  .chart-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 4px;
+  }
+  @media (max-width: 600px) { .chart-grid { grid-template-columns: 1fr; } }
+  .chart-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    padding: 16px 18px 14px;
+  }
+  .chart-title {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+  canvas { max-height: 200px; }
+
+  /* ── DETAIL TABLE ── */
+  .tbl-wrap { overflow-x: auto; margin-bottom: 4px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  thead th {
+    padding: 8px 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--faint);
+    white-space: nowrap;
+    background: var(--surface);
+  }
+  tbody td { padding: 9px 12px; border-bottom: 1px solid var(--border); background: var(--surface); }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover td { background: var(--surface2); }
+  .row-sel td { background: var(--surface2) !important; font-weight: 500; }
+
+  /* ── OUTLIERS ── */
+  .outlier-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 10px;
+    margin-bottom: 4px;
+  }
+  .outlier-card {
+    background: var(--surface);
+    border: 1px solid rgba(163,45,45,.3);
+    border-left: 3px solid var(--red);
+    border-radius: var(--r);
+    padding: 12px 14px;
+  }
+  .outlier-days {
+    font-family: 'Instrument Serif', serif;
+    font-size: 24px;
+    color: var(--red);
+    line-height: 1;
+  }
+  .outlier-meta { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .no-outliers {
+    background: var(--green-bg);
+    border: 1px solid rgba(45,107,61,.25);
+    border-radius: var(--r);
+    padding: 11px 16px;
+    font-size: 13px;
+    color: var(--green);
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* ── CHIPS ── */
+  .chip { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 500; }
+  .chip-amber { background: var(--amber-bg); color: var(--amber); }
+  .chip-green { background: var(--green-bg); color: var(--green); }
+  .chip-red   { background: var(--red-bg);   color: var(--red);   }
+
+  /* ── RECHAZOS KPI 3 ── */
+  .kpi-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  @media (max-width: 500px) { .kpi-3 { grid-template-columns: 1fr 1fr; } }
+
+  .caption {
+    font-size: 11px;
+    color: var(--faint);
+    margin-top: 8px;
+    margin-bottom: 28px;
+  }
 </style>
 </head>
 <body>
-
-<div class="page-header">
-  <div>
-    <h1>Médicos <span>— Choiz Analytics</span></h1>
-  </div>
-  <div id="badge-date" class="badge-date">Cargando…</div>
-</div>
-
 <div class="container">
 
+  <!-- PAGE HEADER -->
+  <div class="page-header">
+    <h1>Médicos &mdash; <span>Choiz Analytics</span></h1>
+    <span class="badge-date" id="badge-date">Cargando…</span>
+  </div>
+
+  <!-- KPIs -->
   <div class="section-label">Semana seleccionada</div>
   <div class="kpi-row" id="kpi-row"></div>
 
-  <div class="section-label" style="margin-top:24px;">Filtrar semana</div>
+  <!-- WEEK FILTER -->
+  <div class="section-label">Filtrar semana</div>
   <div class="wk-filter" id="wk-filter"></div>
 
+  <!-- CHARTS -->
   <div class="section-label">Tendencia semanal</div>
-  <div class="legend-row" id="legend-row"></div>
-  <div class="charts-row">
+  <div class="chart-legend">
+    <div class="legend-item"><div class="legend-dot" style="background:#2563EB"></div>Promedio</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#16A34A"></div>Mediana</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#D97706"></div>P90</div>
+  </div>
+  <div class="chart-grid">
     <div class="chart-card">
       <div class="chart-title">Aprobaciones por semana</div>
-      <div class="chart-wrap"><canvas id="chart-n"></canvas></div>
+      <canvas id="chart-n"></canvas>
     </div>
     <div class="chart-card">
       <div class="chart-title">Tiempo de aprobación (días)</div>
-      <div class="chart-wrap"><canvas id="chart-t"></canvas></div>
+      <canvas id="chart-t"></canvas>
     </div>
   </div>
 
-  <div class="section-label" style="margin-top:20px;">Detalle semanal</div>
+  <!-- DETAIL TABLE -->
+  <div class="section-label">Detalle semanal</div>
   <div class="tbl-wrap">
     <table>
       <thead>
@@ -253,307 +324,280 @@ tr.partial-row td:first-child { border-left: 2.5px solid var(--amber); }
           <th>Tendencia</th>
         </tr>
       </thead>
-      <tbody id="tbl-body"></tbody>
+      <tbody id="detail-tbody"></tbody>
     </table>
   </div>
 
-  <div class="section-label" id="outlier-label" style="margin-top:24px;">Outliers — semana seleccionada (≥ 7 días)</div>
-  <div class="outlier-grid" id="outlier-grid"></div>
+  <!-- OUTLIERS -->
+  <div class="section-label" style="margin-top:20px;">Outliers — semana seleccionada (≥ 7 días)</div>
+  <div id="outlier-container"></div>
 
-  <!-- Videollamadas -->
-  <div class="section-label" style="margin-top:32px;">Videollamadas — Mayo 2026</div>
+  <!-- VIDEOLLAMADAS -->
+  <div class="section-label">Videollamadas — Mayo 2026</div>
   <div class="tbl-wrap">
     <table>
       <thead>
-        <tr>
-          <th>Ofrecimientos</th>
-          <th>Agendadas</th>
-          <th>Tasa conversión</th>
-        </tr>
+        <tr><th>Ofrecimientos</th><th>Agendadas</th><th>Tasa conversión</th></tr>
       </thead>
       <tbody>
         <tr>
           <td>9</td>
           <td>4</td>
-          <td><span class="chip" style="background:var(--blue-bg);color:var(--blue)">44%</span></td>
+          <td><span class="chip chip-amber">44%</span></td>
         </tr>
       </tbody>
     </table>
   </div>
-  <p style="font-size:11px;color:var(--faint);margin-top:8px;">Fuente: chats médico-paciente · warehouse · período 1–21 mayo 2026</p>
+  <p class="caption">Fuente: chats médico-paciente · warehouse · período 1–21 mayo 2026</p>
 
-  <!-- Rechazos -->
-  <div class="section-label" style="margin-top:32px;">Rechazos — Mayo 2026 (1–21 may)</div>
-  <div class="kpi-row" style="grid-template-columns:repeat(3,1fr);margin-bottom:12px;">
+  <!-- RECHAZOS -->
+  <div class="section-label">Rechazos — Mayo 2026 (1–28 may)</div>
+  <div class="kpi-3">
     <div class="kpi">
       <div class="kpi-label">Formularios evaluados</div>
-      <div class="kpi-val">885</div>
+      <div class="kpi-val">1,122</div>
       <div class="kpi-sub">estado final del mes</div>
     </div>
     <div class="kpi">
       <div class="kpi-label">Aprobados</div>
-      <div class="kpi-val" style="color:var(--green)">818</div>
-      <div class="kpi-sub">92.4% del total</div>
+      <div class="kpi-val" style="color:var(--green)">1,087</div>
+      <div class="kpi-sub">96.9% del total</div>
     </div>
     <div class="kpi">
       <div class="kpi-label">Rechazados</div>
-      <div class="kpi-val" style="color:var(--red)">28</div>
-      <div class="kpi-sub">3.2% del total</div>
+      <div class="kpi-val" style="color:var(--red)">37</div>
+      <div class="kpi-sub">3.3% del total</div>
     </div>
   </div>
   <div class="tbl-wrap">
     <table>
       <thead>
-        <tr>
-          <th>Motivo de rechazo</th>
-          <th style="text-align:right;">Casos</th>
-        </tr>
+        <tr><th>Motivo de rechazo</th><th style="text-align:right;width:70px">Casos</th></tr>
       </thead>
       <tbody>
-        <tr>
-          <td>Falta de respuesta a preguntas médicas</td>
-          <td style="text-align:right;">7</td>
-        </tr>
-        <tr>
-          <td>Paciente no apto para tratamiento oral</td>
-          <td style="text-align:right;">4</td>
-        </tr>
-        <tr>
-          <td>Alopecia femenina / paciente femenina</td>
-          <td style="text-align:right;">4</td>
-        </tr>
-        <tr>
-          <td>Solicitud del paciente / reembolso</td>
-          <td style="text-align:right;">3</td>
-        </tr>
-        <tr>
-          <td>Rechazo solicitado por soporte</td>
-          <td style="text-align:right;">2</td>
-        </tr>
-        <tr>
-          <td>Contraindicación médica (cáncer testicular)</td>
-          <td style="text-align:right;">1</td>
-        </tr>
-        <tr>
-          <td>Compra sin evaluación (link directo)</td>
-          <td style="text-align:right;">1</td>
-        </tr>
-        <tr>
-          <td>Cuenta duplicada</td>
-          <td style="text-align:right;">1</td>
-        </tr>
-        <tr>
-          <td>Paciente solicita tratamiento para familiar</td>
-          <td style="text-align:right;">1</td>
-        </tr>
-        <tr>
-          <td>Otros / sin comentario</td>
-          <td style="text-align:right;">4</td>
-        </tr>
-        <tr style="background:var(--surface2);font-weight:500;">
-          <td>Total</td>
-          <td style="text-align:right;">28</td>
+        <tr><td>Falta de respuesta a preguntas médicas</td><td style="text-align:right">8</td></tr>
+        <tr><td>Paciente no apto para tratamiento oral</td><td style="text-align:right">6</td></tr>
+        <tr><td>Alopecia femenina / paciente femenina</td><td style="text-align:right">5</td></tr>
+        <tr><td>Solicitud del paciente / reembolso</td><td style="text-align:right">4</td></tr>
+        <tr><td>Rechazo solicitado por soporte</td><td style="text-align:right">2</td></tr>
+        <tr><td>Compra sin evaluación (link directo)</td><td style="text-align:right">2</td></tr>
+        <tr><td>Cuenta duplicada</td><td style="text-align:right">2</td></tr>
+        <tr><td>Contraindicación médica (cáncer testicular)</td><td style="text-align:right">1</td></tr>
+        <tr><td>Paciente solicita tratamiento para familiar</td><td style="text-align:right">1</td></tr>
+        <tr><td>Grado avanzado de alopecia, no candidato</td><td style="text-align:right">1</td></tr>
+        <tr><td>Paciente con maltrato / se rechaza</td><td style="text-align:right">1</td></tr>
+        <tr><td>Otros / sin comentario</td><td style="text-align:right">4</td></tr>
+        <tr style="background:var(--surface2);font-weight:600;">
+          <td>Total</td><td style="text-align:right">37</td>
         </tr>
       </tbody>
     </table>
   </div>
-  <p style="font-size:11px;color:var(--faint);margin-top:8px;">Fuente: fct_form_status_history · warehouse · período 1–21 mayo 2026</p>
+  <p class="caption">Fuente: fct_form_status_history · warehouse · período 1–28 mayo 2026</p>
 
-</div>
+</div><!-- /container -->
 
 <script>
+/* ─────────── DATA ─────────── */
 const WEEKS = [
-  { key:"w1", label:"7–13 Abr",      n:29,  avg:0.61, median:0.37, p75:0.89, p90:1.64, max:2.40  },
-  { key:"w2", label:"14–20 Abr",     n:237, avg:1.05, median:0.59, p75:1.19, p90:2.81, max:11.09 },
-  { key:"w3", label:"21–27 Abr",     n:303, avg:1.34, median:0.61, p75:1.68, p90:3.91, max:13.57 },
-  { key:"w4", label:"28 Abr–4 May",  n:290, avg:1.50, median:0.64, p75:1.92, p90:3.96, max:14.52 },
-  { key:"w5", label:"5–11 May",      n:243, avg:1.28, median:0.58, p75:1.31, p90:3.35, max:14.23 },
-  { key:"w6", label:"12–18 May",     n:306, avg:1.58, median:0.61, p75:1.47, p90:4.21, max:23.97 },
-  { key:"w7", label:"19–21 May",     n:107, avg:2.95, median:0.61, p75:4.53, p90:9.49, max:21.48, isPartial:true },
+  { key:"w1", label:"7–13 Abr",       n:29,  avg:0.61, median:0.37, p75:0.89, p90:1.64, max:2.40  },
+  { key:"w2", label:"14–20 Abr",      n:237, avg:1.05, median:0.59, p75:1.19, p90:2.81, max:11.09 },
+  { key:"w3", label:"21–27 Abr",      n:303, avg:1.34, median:0.61, p75:1.68, p90:3.91, max:13.57 },
+  { key:"w4", label:"28 Abr–4 May",   n:290, avg:1.50, median:0.64, p75:1.92, p90:3.96, max:14.52 },
+  { key:"w5", label:"5–11 May",       n:243, avg:1.28, median:0.58, p75:1.31, p90:3.35, max:14.23 },
+  { key:"w6", label:"12–18 May",      n:289, avg:1.60, median:0.61, p75:1.40, p90:4.20, max:24.00 },
+  { key:"w7", label:"19–25 May",      n:303, avg:1.90, median:0.70, p75:1.60, p90:5.90, max:21.48 },
+  { key:"w8", label:"26–28 May",      n:148, avg:0.70, median:0.50, p75:0.80, p90:1.80, max:6.46, isCurrent:true },
 ];
 
+const PACIENTES_SEGUIMIENTO = 12807;
+
 const OUTLIERS = {
-  "w6": [
+  w1:[],w2:[],
+  w3:[
+    { form_id:274500, doctor_id:8,  dias:13.57, fecha:"2026-04-27" },
+  ],
+  w4:[
+    { form_id:276441, doctor_id:8,  dias:14.52, fecha:"2026-05-01" },
+  ],
+  w5:[
+    { form_id:277316, doctor_id:8,  dias:14.23, fecha:"2026-05-11" },
+  ],
+  w6:[
     { form_id:277605, doctor_id:8,  dias:23.97, fecha:"2026-05-17" },
     { form_id:277316, doctor_id:8,  dias:21.47, fecha:"2026-05-12" },
     { form_id:277596, doctor_id:8,  dias:21.02, fecha:"2026-05-14" },
     { form_id:278166, doctor_id:8,  dias:14.51, fecha:"2026-05-13" },
   ],
-  "w7": [
+  w7:[
     { form_id:278106, doctor_id:8,  dias:21.48, fecha:"2026-05-19" },
     { form_id:278361, doctor_id:9,  dias:19.84, fecha:"2026-05-19" },
     { form_id:278779, doctor_id:14, dias:17.03, fecha:"2026-05-19" },
     { form_id:278874, doctor_id:10, dias:16.84, fecha:"2026-05-19" },
+    { form_id:279036, doctor_id:8,  dias:15.70, fecha:"2026-05-19" },
+    { form_id:279393, doctor_id:8,  dias:14.81, fecha:"2026-05-21" },
+    { form_id:279372, doctor_id:8,  dias:13.96, fecha:"2026-05-19" },
+    { form_id:279584, doctor_id:14, dias:13.20, fecha:"2026-05-19" },
+    { form_id:279648, doctor_id:10, dias:12.42, fecha:"2026-05-19" },
+    { form_id:279681, doctor_id:8,  dias:11.98, fecha:"2026-05-19" },
+    { form_id:279856, doctor_id:14, dias:10.66, fecha:"2026-05-19" },
+    { form_id:279913, doctor_id:8,  dias:9.67,  fecha:"2026-05-19" },
+    { form_id:280031, doctor_id:8,  dias:9.37,  fecha:"2026-05-20" },
+    { form_id:276441, doctor_id:8,  dias:8.93,  fecha:"2026-05-19" },
+    { form_id:279960, doctor_id:8,  dias:8.02,  fecha:"2026-05-18" },
   ],
+  w8:[],
 };
 
-const PACIENTES_SEGUIMIENTO = 12807;
+const DOC_NAMES = {
+  8:"Arrieta Dulce", 9:"Bárcenas Diana",
+  10:"Álvarez Christhian", 14:"Salas Andrés",
+};
 
-let currentWk = "w7";
+/* ─────────── STATE ─────────── */
+let sel = "w8";
+let chartN, chartT;
 
-function fmt(v, dec=2) { return v == null ? "—" : v.toFixed(dec); }
+/* ─────────── HELPERS ─────────── */
+function f(v, d=1){ return v==null?"—":(+v).toFixed(d); }
 
-function renderKPIs() {
-  const w = WEEKS.find(x => x.key === currentWk);
-  const prev = WEEKS[WEEKS.findIndex(x => x.key === currentWk) - 1];
-  const row = document.getElementById("kpi-row");
-
-  function deltaHtml(curr, prev, higherIsBad=true) {
-    if (!prev) return '';
-    const pct = ((curr - prev) / prev) * 100;
-    const sign = pct >= 0 ? "▲" : "▼";
-    const cls = (pct > 0) === higherIsBad ? "delta-up" : "delta-down";
-    return `<span class="kpi-delta ${cls}">${sign} ${Math.abs(pct).toFixed(1)}% vs sem anterior</span>`;
-  }
-
-  row.innerHTML = [
-    { label:"Aprobaciones",           val: w.n,                                        sub: "formularios aprobados",     d: prev ? deltaHtml(w.n, prev.n, false) : '' },
-    { label:"Promedio aprobación",    val: fmt(w.avg) + " d",                          sub: "días hábiles",              d: prev ? deltaHtml(w.avg, prev.avg, true) : '' },
-    { label:"Mediana aprobación",     val: fmt(w.median) + " d",                       sub: "p50 — caso típico",         d: prev ? deltaHtml(w.median, prev.median, true) : '' },
-    { label:"Pacientes en seguimiento", val: PACIENTES_SEGUIMIENTO.toLocaleString("es-MX"), sub: "estado APPROVED activo", d: '' },
-  ].map(k => `
-    <div class="kpi">
-      <div class="kpi-label">${k.label}</div>
-      <div class="kpi-val">${k.val}</div>
-      <div class="kpi-sub">${k.sub}</div>
-      ${k.d}
-    </div>
-  `).join('');
+function delta(curr, prev, higherIsBad){
+  if(prev==null) return "";
+  const pct = ((curr-prev)/prev)*100;
+  const up  = pct >= 0;
+  const bad = higherIsBad ? up : !up;
+  const cls = bad ? "delta-bad" : pct===0 ? "delta-neu" : "delta-good";
+  const s   = up ? "▲" : "▼";
+  return `<span class="kpi-delta ${cls}">${s} ${Math.abs(pct).toFixed(1)}% vs sem anterior</span>`;
 }
 
-function renderFilters() {
-  const wrap = document.getElementById("wk-filter");
-  wrap.innerHTML = WEEKS.map(w => {
-    const extra = w.isPartial ? ' 🔴' : '';
-    return `<button class="wk-btn${w.key === currentWk ? ' active':''}" data-key="${w.key}">${w.label}${extra}</button>`;
-  }).join('');
-  wrap.querySelectorAll('.wk-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      currentWk = btn.dataset.key;
-      wrap.querySelectorAll('.wk-btn').forEach(b => b.classList.toggle('active', b.dataset.key === currentWk));
-      renderKPIs(); renderTable(); renderOutliers(); refreshCharts();
-    });
-  });
+/* ─────────── KPIs ─────────── */
+function renderKPIs(){
+  const w = WEEKS.find(x=>x.key===sel);
+  const i = WEEKS.findIndex(x=>x.key===sel);
+  const p = i>0 ? WEEKS[i-1] : null;
+  document.getElementById("kpi-row").innerHTML = [
+    { label:"Aprobaciones",        val:w.n,             sub:"formularios aprobados",  d:delta(w.n, p?.n, false) },
+    { label:"Promedio aprobación", val:f(w.avg)+" d",   sub:"días hábiles",           d:delta(w.avg, p?.avg, true) },
+    { label:"Mediana aprobación",  val:f(w.median)+" d",sub:"p50 — caso típico",       d:delta(w.median, p?.median, true) },
+    { label:"Pacientes en seguimiento", val:PACIENTES_SEGUIMIENTO.toLocaleString("es-MX"), sub:"estado APPROVED activo", d:"" },
+  ].map(k=>`<div class="kpi">
+    <div class="kpi-label">${k.label}</div>
+    <div class="kpi-val">${k.val}</div>
+    <div class="kpi-sub">${k.sub}</div>
+    ${k.d}
+  </div>`).join("");
 }
 
-function renderTable() {
-  document.getElementById("tbl-body").innerHTML = WEEKS.map((w, i) => {
-    const prev = WEEKS[i-1];
-    const trend = prev
-      ? (w.avg < prev.avg
-          ? `<span class="chip" style="background:var(--green-bg);color:var(--green)">▼ mejora</span>`
-          : w.avg > prev.avg
-            ? `<span class="chip" style="background:var(--red-bg);color:var(--red)">▲ sube</span>`
-            : `<span class="chip" style="background:var(--surface2);color:var(--muted)">= estable</span>`)
-      : `<span class="chip" style="background:var(--surface2);color:var(--muted)">— base</span>`;
+/* ─────────── WEEK FILTER ─────────── */
+function renderFilter(){
+  document.getElementById("wk-filter").innerHTML = WEEKS.map(w=>`
+    <button class="wk-btn${w.key===sel?" active":""}" onclick="pick('${w.key}')">
+      ${w.label}
+      ${w.isCurrent&&w.key===sel?`<span class="live-dot"></span>`:""}
+    </button>`).join("");
+}
 
-    const rowClass = w.key === currentWk
-      ? (w.isPartial ? ' class="active-row partial-row"' : ' class="active-row"')
-      : (w.isPartial ? ' class="partial-row"' : '');
-
-    const semLabel = w.isPartial
-      ? `${w.label} <span class="chip" style="background:var(--amber-bg);color:var(--amber);font-size:10px">EN CURSO</span>`
-      : w.label;
-
-    return `<tr${rowClass}>
-      <td>${semLabel}</td>
+/* ─────────── TABLE ─────────── */
+function renderTable(){
+  document.getElementById("detail-tbody").innerHTML = WEEKS.map((w,i)=>{
+    const p = i>0?WEEKS[i-1]:null;
+    const isSel = w.key===sel;
+    const d = p ? ((w.avg-p.avg)/p.avg*100) : null;
+    let tend = "—";
+    if(d!==null){
+      const bad = d>0;
+      const cls = bad?"delta-bad":"delta-good";
+      tend = `<span class="kpi-delta ${cls}">${d>=0?"▲":"▼"} ${Math.abs(d).toFixed(1)}%</span>`;
+    }
+    return `<tr class="${isSel?"row-sel":""}">
+      <td>${w.label}${w.isCurrent?` <span class="chip chip-amber" style="font-size:9px;padding:1px 6px;margin-left:4px">en curso</span>`:""}</td>
       <td>${w.n}</td>
-      <td>${fmt(w.avg)}</td>
-      <td>${fmt(w.median)}</td>
-      <td>${fmt(w.p75)}</td>
-      <td>${fmt(w.p90)}</td>
-      <td style="color:${w.max > 15 ? 'var(--red)' : 'inherit'}">${fmt(w.max)}</td>
-      <td>${trend}</td>
+      <td>${f(w.avg)} d</td>
+      <td>${f(w.median)} d</td>
+      <td>${f(w.p75)} d</td>
+      <td>${f(w.p90)} d</td>
+      <td>${f(w.max)} d</td>
+      <td>${tend}</td>
     </tr>`;
-  }).join('');
+  }).join("");
 }
 
-function renderOutliers() {
-  const w = WEEKS.find(x => x.key === currentWk);
-  document.getElementById("outlier-label").textContent =
-    `Outliers — ${w.label}${w.isPartial ? ' (en curso)' : ''} (≥ 7 días)`;
-
-  const list = OUTLIERS[currentWk];
-  if (!list) {
-    document.getElementById("outlier-grid").innerHTML =
-      `<p style="font-size:12px;color:var(--muted);grid-column:1/-1;padding:16px 0">Sin detalle de outliers para esta semana.</p>`;
+/* ─────────── OUTLIERS ─────────── */
+function renderOutliers(){
+  const list = OUTLIERS[sel]||[];
+  const el = document.getElementById("outlier-container");
+  if(!list.length){
+    el.innerHTML=`<div class="no-outliers">✓ Sin outliers (≥ 7 días) en esta semana</div>`;
     return;
   }
-  document.getElementById("outlier-grid").innerHTML = list.map(o => `
+  el.innerHTML=`<div class="outlier-grid">${list.map(o=>`
     <div class="outlier-card">
-      <div class="outlier-dias">${fmt(o.dias, 1)} d</div>
-      <div class="outlier-label">días hasta aprobación</div>
-      <div class="outlier-form">Form #${o.form_id}</div>
-      <div style="font-size:11px;color:var(--muted);margin-top:3px">Dr. ID ${o.doctor_id} · ${o.fecha}</div>
-    </div>
-  `).join('');
+      <div class="outlier-days">${o.dias} d</div>
+      <div class="outlier-meta">Form #${o.form_id}</div>
+      <div class="outlier-meta">Dr. ${DOC_NAMES[o.doctor_id]||"ID "+o.doctor_id}</div>
+      <div class="outlier-meta">${o.fecha}</div>
+    </div>`).join("")}</div>`;
 }
 
-function renderLegend() {
-  document.getElementById("legend-row").innerHTML = [
-    { color:"#2A5C9E", label:"Promedio" },
-    { color:"#3BAA72", label:"Mediana" },
-    { color:"#E8A838", label:"P90" },
-  ].map(i => `<span class="legend-item"><span class="legend-dot" style="background:${i.color}"></span>${i.label}</span>`).join('');
-}
+/* ─────────── CHARTS ─────────── */
+const chartColors = {
+  gridLine: "rgba(0,0,0,.07)",
+  tickColor: "#9B9590",
+};
+const baseOpts = {
+  responsive:true, maintainAspectRatio:true,
+  plugins:{ legend:{ display:false } },
+  scales:{
+    x:{ ticks:{ color:chartColors.tickColor, font:{size:10}, maxRotation:35 }, grid:{ color:chartColors.gridLine } },
+    y:{ ticks:{ color:chartColors.tickColor, font:{size:10} }, grid:{ color:chartColors.gridLine } },
+  }
+};
 
-let chartN, chartT;
-const labels = WEEKS.map(w => w.label);
-
-function buildCharts() {
-  const baseOpts = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: { legend:{display:false}, tooltip:{mode:'index',intersect:false} },
-    scales: {
-      x: { grid:{display:false}, ticks:{font:{family:'Geist Mono',size:10},color:'#7A7870'} },
-      y: { grid:{color:'rgba(0,0,0,0.05)'}, ticks:{font:{family:'Geist Mono',size:10},color:'#7A7870'} },
-    },
-  };
-
-  chartN = new Chart(document.getElementById("chart-n"), {
-    type: "bar",
-    data: {
+function buildCharts(){
+  const labels = WEEKS.map(w=>w.label);
+  chartN = new Chart(document.getElementById("chart-n"),{
+    type:"bar",
+    data:{
       labels,
-      datasets: [{
-        data: WEEKS.map(w => w.n),
-        backgroundColor: WEEKS.map(w =>
-          w.key === currentWk ? "#2A5C9E" : w.isPartial ? "#FAD99A" : "#B5C8E8"
-        ),
+      datasets:[{
+        data: WEEKS.map(w=>w.n),
+        backgroundColor: WEEKS.map(w=>w.key===sel?"#2563EB":"#BFCFE7"),
         borderRadius: 4,
-      }],
+      }]
     },
-    options: baseOpts,
+    options:{ ...baseOpts }
   });
-
-  chartT = new Chart(document.getElementById("chart-t"), {
-    type: "line",
-    data: {
+  chartT = new Chart(document.getElementById("chart-t"),{
+    type:"line",
+    data:{
       labels,
-      datasets: [
-        { label:"Promedio", data:WEEKS.map(w=>w.avg),    borderColor:"#2A5C9E", backgroundColor:"rgba(42,92,158,0.08)", tension:0.3, pointRadius:4, fill:true },
-        { label:"Mediana",  data:WEEKS.map(w=>w.median), borderColor:"#3BAA72", backgroundColor:"transparent",          tension:0.3, pointRadius:3, borderDash:[4,3] },
-        { label:"P90",      data:WEEKS.map(w=>w.p90),    borderColor:"#E8A838", backgroundColor:"transparent",          tension:0.3, pointRadius:3, borderDash:[2,4] },
-      ],
+      datasets:[
+        { label:"Promedio", data:WEEKS.map(w=>w.avg),    borderColor:"#2563EB", backgroundColor:"rgba(37,99,235,.06)", tension:.3, pointRadius:3, pointHoverRadius:5, fill:true },
+        { label:"Mediana",  data:WEEKS.map(w=>w.median), borderColor:"#16A34A", backgroundColor:"transparent",         tension:.3, pointRadius:3, borderDash:[4,3] },
+        { label:"P90",      data:WEEKS.map(w=>w.p90),    borderColor:"#D97706", backgroundColor:"transparent",         tension:.3, pointRadius:3, borderDash:[2,4] },
+      ]
     },
-    options: baseOpts,
+    options:{ ...baseOpts }
   });
 }
 
-function refreshCharts() {
-  chartN.data.datasets[0].backgroundColor = WEEKS.map(w =>
-    w.key === currentWk ? "#2A5C9E" : w.isPartial ? "#FAD99A" : "#B5C8E8"
-  );
+function refreshBar(){
+  chartN.data.datasets[0].backgroundColor = WEEKS.map(w=>w.key===sel?"#2563EB":"#BFCFE7");
   chartN.update();
 }
 
-/* init */
+/* ─────────── PICK ─────────── */
+function pick(k){
+  sel=k; renderFilter(); renderKPIs(); renderTable(); renderOutliers(); refreshBar();
+}
+
+/* ─────────── INIT ─────────── */
 const now = new Date();
-document.getElementById('badge-date').textContent =
+document.getElementById("badge-date").textContent =
   `Actualizado: ${now.getDate()}/${now.getMonth()+1}/${now.getFullYear()}`;
 
-renderFilters();
-renderLegend();
+renderFilter();
 renderKPIs();
 buildCharts();
 renderTable();
