@@ -145,6 +145,25 @@
     border-color: var(--accent);
     color: #fff;
   }
+  .wk-month-open {
+    background: var(--surface2);
+    border-color: var(--border-md);
+    color: var(--text);
+    font-weight: 500;
+  }
+  .wk-sub {
+    font-size: 10px;
+    padding: 4px 10px;
+    opacity: .85;
+  }
+  .wk-sub.active { opacity: 1; }
+  .wk-sep {
+    display: inline-block;
+    width: 1px; height: 22px;
+    background: var(--border-md);
+    align-self: center;
+    margin: 0 2px;
+  }
   .live-dot {
     width: 7px; height: 7px; border-radius: 50%;
     background: #E8453C;
@@ -341,8 +360,8 @@
       </thead>
       <tbody>
         <tr>
-          <td>9</td>
-          <td>4</td>
+          <td>16</td>
+          <td>7</td>
           <td><span class="chip chip-amber">44%</span></td>
         </tr>
       </tbody>
@@ -400,28 +419,44 @@
 <script>
 /* ─────────── DATA ─────────── */
 const WEEKS = [
-  { key:"w1", label:"7–13 Abr",       n:29,  avg:0.61, median:0.37, p75:0.89, p90:1.64, max:2.40  },
-  { key:"w2", label:"14–20 Abr",      n:237, avg:1.05, median:0.59, p75:1.19, p90:2.81, max:11.09 },
-  { key:"w3", label:"21–27 Abr",      n:303, avg:1.34, median:0.61, p75:1.68, p90:3.91, max:13.57 },
-  { key:"w4", label:"28 Abr–4 May",   n:290, avg:1.50, median:0.64, p75:1.92, p90:3.96, max:14.52 },
-  { key:"w5", label:"5–11 May",       n:243, avg:1.28, median:0.58, p75:1.31, p90:3.35, max:14.23 },
-  { key:"w6", label:"12–18 May",      n:289, avg:1.60, median:0.61, p75:1.40, p90:4.20, max:24.00 },
-  { key:"w7", label:"19–25 May",      n:303, avg:1.90, median:0.70, p75:1.60, p90:5.90, max:21.48 },
-  { key:"w8", label:"26–28 May",      n:148, avg:0.70, median:0.50, p75:0.80, p90:1.80, max:6.46, isCurrent:true },
+  { key:"w1", label:"7–13 Abr",       month:"may", n:14,  avg:0.91, median:0.77, p75:1.40, p90:1.70, max:2.40  },
+  { key:"w2", label:"14–20 Abr",      month:"may", n:198, avg:0.81, median:0.55, p75:1.02, p90:2.05, max:4.73  },
+  { key:"w3", label:"21–27 Abr",      month:"may", n:308, avg:1.34, median:0.64, p75:1.71, p90:3.85, max:11.09 },
+  { key:"w4", label:"28 Abr–4 May",   month:"may", n:265, avg:1.51, median:0.65, p75:1.96, p90:4.07, max:13.57 },
+  { key:"w5", label:"5–11 May",       month:"may", n:257, avg:1.48, median:0.63, p75:1.51, p90:3.73, max:14.52 },
+  { key:"w6", label:"12–18 May",      month:"may", n:289, avg:1.56, median:0.59, p75:1.39, p90:4.24, max:23.97 },
+  { key:"w7", label:"19–25 May",      month:"may", n:303, avg:1.94, median:0.66, p75:1.64, p90:5.90, max:21.48 },
+  { key:"w8", label:"26 May–1 Jun",   month:"may", n:328, avg:0.94, median:0.59, p75:0.98, p90:1.92, max:7.53  },
+  { key:"w9", label:"2–4 Jun",        month:"jun", n:238, avg:0.93, median:0.51, p75:0.88, p90:2.57, max:7.05, isCurrent:true },
 ];
 
-const PACIENTES_SEGUIMIENTO = 12807;
+// Mayo agregado (suma/promedio ponderado de w1–w8)
+const MAY_WEEKS = WEEKS.filter(w=>w.month==="may");
+const MAY_AGG = (()=>{
+  const totalN = MAY_WEEKS.reduce((s,w)=>s+w.n, 0);
+  const wavg   = MAY_WEEKS.reduce((s,w)=>s+w.avg*w.n, 0) / totalN;
+  // Para mediana/p75/p90/max usamos el promedio ponderado como aproximación
+  const wmed   = MAY_WEEKS.reduce((s,w)=>s+w.median*w.n, 0) / totalN;
+  const wp75   = MAY_WEEKS.reduce((s,w)=>s+w.p75*w.n, 0) / totalN;
+  const wp90   = MAY_WEEKS.reduce((s,w)=>s+w.p90*w.n, 0) / totalN;
+  const wmax   = Math.max(...MAY_WEEKS.map(w=>w.max));
+  return { key:"mayo", label:"Mayo 2026", month:"may", isMayAgg:true,
+    n:totalN, avg:+wavg.toFixed(2), median:+wmed.toFixed(2),
+    p75:+wp75.toFixed(2), p90:+wp90.toFixed(2), max:wmax };
+})();
+
+const PACIENTES_SEGUIMIENTO = 13492;
 
 const OUTLIERS = {
   w1:[],w2:[],
   w3:[
-    { form_id:274500, doctor_id:8,  dias:13.57, fecha:"2026-04-27" },
+    { form_id:274500, doctor_id:8,  dias:11.09, fecha:"2026-04-27" },
   ],
   w4:[
-    { form_id:276441, doctor_id:8,  dias:14.52, fecha:"2026-05-01" },
+    { form_id:276441, doctor_id:8,  dias:13.57, fecha:"2026-05-01" },
   ],
   w5:[
-    { form_id:277316, doctor_id:8,  dias:14.23, fecha:"2026-05-11" },
+    { form_id:277316, doctor_id:8,  dias:14.52, fecha:"2026-05-11" },
   ],
   w6:[
     { form_id:277605, doctor_id:8,  dias:23.97, fecha:"2026-05-17" },
@@ -446,7 +481,15 @@ const OUTLIERS = {
     { form_id:276441, doctor_id:8,  dias:8.93,  fecha:"2026-05-19" },
     { form_id:279960, doctor_id:8,  dias:8.02,  fecha:"2026-05-18" },
   ],
-  w8:[],
+  w8:[
+    { form_id:281333, doctor_id:8,  dias:7.53, fecha:"2026-05-31" },
+    { form_id:281337, doctor_id:10, dias:7.51, fecha:"2026-05-31" },
+    { form_id:281355, doctor_id:14, dias:7.38, fecha:"2026-05-31" },
+    { form_id:281382, doctor_id:9,  dias:7.04, fecha:"2026-05-31" },
+  ],
+  w9:[
+    { form_id:281925, doctor_id:14, dias:7.05, fecha:"2026-06-03" },
+  ],
 };
 
 const DOC_NAMES = {
@@ -455,7 +498,8 @@ const DOC_NAMES = {
 };
 
 /* ─────────── STATE ─────────── */
-let sel = "w8";
+let sel = "w9";          // semana o "mayo" seleccionada
+let mayExpanded = false; // si mayo está expandido en chips de semana
 let chartN, chartT;
 
 /* ─────────── HELPERS ─────────── */
@@ -471,15 +515,31 @@ function delta(curr, prev, higherIsBad){
   return `<span class="kpi-delta ${cls}">${s} ${Math.abs(pct).toFixed(1)}% vs sem anterior</span>`;
 }
 
+// Devuelve el objeto de datos para la selección actual
+function currentData(){
+  if(sel==="mayo") return MAY_AGG;
+  return WEEKS.find(x=>x.key===sel);
+}
+
+// Items que muestra la tabla según selección
+function tableRows(){
+  if(sel==="mayo") return MAY_WEEKS;
+  return WEEKS;
+}
+
 /* ─────────── KPIs ─────────── */
 function renderKPIs(){
-  const w = WEEKS.find(x=>x.key===sel);
-  const i = WEEKS.findIndex(x=>x.key===sel);
-  const p = i>0 ? WEEKS[i-1] : null;
+  const w = currentData();
+  // Para delta vs anterior: si es semana de junio, compara con semana anterior; si es mayo agregado, sin delta
+  let prev = null;
+  if(sel!=="mayo"){
+    const i = WEEKS.findIndex(x=>x.key===sel);
+    prev = i>0 ? WEEKS[i-1] : null;
+  }
   document.getElementById("kpi-row").innerHTML = [
-    { label:"Aprobaciones",        val:w.n,             sub:"formularios aprobados",  d:delta(w.n, p?.n, false) },
-    { label:"Promedio aprobación", val:f(w.avg)+" d",   sub:"días hábiles",           d:delta(w.avg, p?.avg, true) },
-    { label:"Mediana aprobación",  val:f(w.median)+" d",sub:"p50 — caso típico",       d:delta(w.median, p?.median, true) },
+    { label:"Aprobaciones",             val:w.n.toLocaleString("es-MX"), sub:"formularios aprobados",  d:prev?delta(w.n, prev.n, false):"" },
+    { label:"Promedio aprobación",      val:f(w.avg)+" d",               sub:"días hábiles",            d:prev?delta(w.avg, prev.avg, true):"" },
+    { label:"Mediana aprobación",       val:f(w.median)+" d",            sub:"p50 — caso típico",        d:prev?delta(w.median, prev.median, true):"" },
     { label:"Pacientes en seguimiento", val:PACIENTES_SEGUIMIENTO.toLocaleString("es-MX"), sub:"estado APPROVED activo", d:"" },
   ].map(k=>`<div class="kpi">
     <div class="kpi-label">${k.label}</div>
@@ -491,18 +551,46 @@ function renderKPIs(){
 
 /* ─────────── WEEK FILTER ─────────── */
 function renderFilter(){
-  document.getElementById("wk-filter").innerHTML = WEEKS.map(w=>`
-    <button class="wk-btn${w.key===sel?" active":""}" onclick="pick('${w.key}')">
+  const junWeeks = WEEKS.filter(w=>w.month==="jun");
+  let html = "";
+
+  // Chip Mayo (colapsado o expandido)
+  const mayActive = sel==="mayo" || MAY_WEEKS.some(w=>w.key===sel);
+  if(!mayExpanded){
+    html += `<button class="wk-btn${sel==="mayo"?" active":""}" onclick="pickMayo()">
+      Mayo 2026 <span style="opacity:.6;font-size:10px">▾</span>
+    </button>`;
+  } else {
+    // Chip de mes colapsable
+    html += `<button class="wk-btn wk-month-open" onclick="collapseMayo()">
+      Mayo 2026 <span style="opacity:.6;font-size:10px">▴</span>
+    </button>`;
+    // Chips de semanas de mayo
+    MAY_WEEKS.forEach(w=>{
+      html += `<button class="wk-btn wk-sub${w.key===sel?" active":""}" onclick="pick('${w.key}')">
+        ${w.label}
+      </button>`;
+    });
+    html += `<span class="wk-sep"></span>`;
+  }
+
+  // Chips de junio
+  junWeeks.forEach(w=>{
+    html += `<button class="wk-btn${w.key===sel?" active":""}" onclick="pick('${w.key}')">
       ${w.label}
-      ${w.isCurrent&&w.key===sel?`<span class="live-dot"></span>`:""}
-    </button>`).join("");
+      ${w.isCurrent?`<span class="live-dot"></span>`:""}
+    </button>`;
+  });
+
+  document.getElementById("wk-filter").innerHTML = html;
 }
 
 /* ─────────── TABLE ─────────── */
 function renderTable(){
-  document.getElementById("detail-tbody").innerHTML = WEEKS.map((w,i)=>{
-    const p = i>0?WEEKS[i-1]:null;
-    const isSel = w.key===sel;
+  const rows = tableRows();
+  document.getElementById("detail-tbody").innerHTML = rows.map((w,i)=>{
+    const p = i>0?rows[i-1]:null;
+    const isSel = sel==="mayo" ? false : w.key===sel;
     const d = p ? ((w.avg-p.avg)/p.avg*100) : null;
     let tend = "—";
     if(d!==null){
@@ -525,17 +613,22 @@ function renderTable(){
 
 /* ─────────── OUTLIERS ─────────── */
 function renderOutliers(){
-  const list = OUTLIERS[sel]||[];
+  // Para mayo agregado, mostrar todos los outliers de mayo
+  let list = [];
+  if(sel==="mayo"){
+    MAY_WEEKS.forEach(w=>{ list = list.concat(OUTLIERS[w.key]||[]); });
+  } else {
+    list = OUTLIERS[sel]||[];
+  }
   const el = document.getElementById("outlier-container");
   if(!list.length){
-    el.innerHTML=`<div class="no-outliers">✓ Sin outliers (≥ 7 días) en esta semana</div>`;
+    el.innerHTML=`<div class="no-outliers">✓ Sin outliers (≥ 7 días) en este período</div>`;
     return;
   }
   el.innerHTML=`<div class="outlier-grid">${list.map(o=>`
     <div class="outlier-card">
       <div class="outlier-days">${o.dias} d</div>
       <div class="outlier-meta">Form #${o.form_id}</div>
-      <div class="outlier-meta">Dr. ${DOC_NAMES[o.doctor_id]||"ID "+o.doctor_id}</div>
       <div class="outlier-meta">${o.fecha}</div>
     </div>`).join("")}</div>`;
 }
@@ -554,15 +647,19 @@ const baseOpts = {
   }
 };
 
+// Los charts siempre muestran todas las semanas (mayo desglosado + junio)
+function chartWeeks(){ return WEEKS; }
+
 function buildCharts(){
-  const labels = WEEKS.map(w=>w.label);
+  const cw = chartWeeks();
+  const labels = cw.map(w=>w.label);
   chartN = new Chart(document.getElementById("chart-n"),{
     type:"bar",
     data:{
       labels,
       datasets:[{
-        data: WEEKS.map(w=>w.n),
-        backgroundColor: WEEKS.map(w=>w.key===sel?"#2563EB":"#BFCFE7"),
+        data: cw.map(w=>w.n),
+        backgroundColor: cw.map(w=>barColor(w)),
         borderRadius: 4,
       }]
     },
@@ -573,23 +670,41 @@ function buildCharts(){
     data:{
       labels,
       datasets:[
-        { label:"Promedio", data:WEEKS.map(w=>w.avg),    borderColor:"#2563EB", backgroundColor:"rgba(37,99,235,.06)", tension:.3, pointRadius:3, pointHoverRadius:5, fill:true },
-        { label:"Mediana",  data:WEEKS.map(w=>w.median), borderColor:"#16A34A", backgroundColor:"transparent",         tension:.3, pointRadius:3, borderDash:[4,3] },
-        { label:"P90",      data:WEEKS.map(w=>w.p90),    borderColor:"#D97706", backgroundColor:"transparent",         tension:.3, pointRadius:3, borderDash:[2,4] },
+        { label:"Promedio", data:cw.map(w=>w.avg),    borderColor:"#2563EB", backgroundColor:"rgba(37,99,235,.06)", tension:.3, pointRadius:3, pointHoverRadius:5, fill:true },
+        { label:"Mediana",  data:cw.map(w=>w.median), borderColor:"#16A34A", backgroundColor:"transparent",         tension:.3, pointRadius:3, borderDash:[4,3] },
+        { label:"P90",      data:cw.map(w=>w.p90),    borderColor:"#D97706", backgroundColor:"transparent",         tension:.3, pointRadius:3, borderDash:[2,4] },
       ]
     },
     options:{ ...baseOpts }
   });
 }
 
+function barColor(w){
+  if(sel==="mayo") return w.month==="may" ? "#2563EB" : "#BFCFE7";
+  return w.key===sel ? "#2563EB" : "#BFCFE7";
+}
+
 function refreshBar(){
-  chartN.data.datasets[0].backgroundColor = WEEKS.map(w=>w.key===sel?"#2563EB":"#BFCFE7");
+  const cw = chartWeeks();
+  chartN.data.datasets[0].backgroundColor = cw.map(w=>barColor(w));
   chartN.update();
 }
 
-/* ─────────── PICK ─────────── */
+/* ─────────── PICK ACTIONS ─────────── */
 function pick(k){
-  sel=k; renderFilter(); renderKPIs(); renderTable(); renderOutliers(); refreshBar();
+  sel=k; mayExpanded=MAY_WEEKS.some(w=>w.key===k)||mayExpanded;
+  renderFilter(); renderKPIs(); renderTable(); renderOutliers(); refreshBar();
+}
+
+function pickMayo(){
+  sel="mayo"; mayExpanded=false;
+  renderFilter(); renderKPIs(); renderTable(); renderOutliers(); refreshBar();
+}
+
+function collapseMayo(){
+  mayExpanded=false;
+  if(MAY_WEEKS.some(w=>w.key===sel)) sel="mayo";
+  renderFilter(); renderKPIs(); renderTable(); renderOutliers(); refreshBar();
 }
 
 /* ─────────── INIT ─────────── */
