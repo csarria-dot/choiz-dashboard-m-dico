@@ -427,7 +427,8 @@ const WEEKS = [
   { key:"w6", label:"12–18 May",      month:"may", n:289, avg:1.56, median:0.59, p75:1.39, p90:4.24, max:23.97 },
   { key:"w7", label:"19–25 May",      month:"may", n:303, avg:1.94, median:0.66, p75:1.64, p90:5.90, max:21.48 },
   { key:"w8", label:"26 May–1 Jun",   month:"may", n:328, avg:0.94, median:0.59, p75:0.98, p90:1.92, max:7.53  },
-  { key:"w9", label:"2–4 Jun",        month:"jun", n:238, avg:0.93, median:0.51, p75:0.88, p90:2.57, max:7.05, isCurrent:true },
+  { key:"w9", label:"1–7 Jun",         month:"jun", n:429, avg:1.09, median:0.56, p75:1.13, p90:2.98, max:9.82  },
+  { key:"w10", label:"8–11 Jun",       month:"jun", n:194, avg:1.15, median:0.52, p75:0.94, p90:3.46, max:11.88, isCurrent:true },
 ];
 
 // Mayo agregado (suma/promedio ponderado de w1–w8)
@@ -445,7 +446,7 @@ const MAY_AGG = (()=>{
     p75:+wp75.toFixed(2), p90:+wp90.toFixed(2), max:wmax };
 })();
 
-const PACIENTES_SEGUIMIENTO = 13492;
+const PACIENTES_SEGUIMIENTO = 13877;
 
 const OUTLIERS = {
   w1:[],w2:[],
@@ -488,7 +489,18 @@ const OUTLIERS = {
     { form_id:281382, doctor_id:9,  dias:7.04, fecha:"2026-05-31" },
   ],
   w9:[
-    { form_id:281925, doctor_id:14, dias:7.05, fecha:"2026-06-03" },
+    { form_id:281925, dias:7.05, fecha:"2026-06-03" },
+    { form_id:281562, dias:9.82, fecha:"2026-06-04" },
+    { form_id:281954, dias:8.45, fecha:"2026-06-05" },
+    { form_id:282060, dias:7.86, fecha:"2026-06-05" },
+    { form_id:282086, dias:9.60, fecha:"2026-06-07" },
+  ],
+  w10:[
+    { form_id:282043, dias:11.88, fecha:"2026-06-09" },
+    { form_id:282563, dias:8.92,  fecha:"2026-06-09" },
+    { form_id:282620, dias:8.60,  fecha:"2026-06-09" },
+    { form_id:282893, dias:7.51,  fecha:"2026-06-09" },
+    { form_id:282822, dias:7.01,  fecha:"2026-06-08" },
   ],
 };
 
@@ -498,7 +510,7 @@ const DOC_NAMES = {
 };
 
 /* ─────────── STATE ─────────── */
-let sel = "w9";          // semana o "mayo" seleccionada
+let sel = "w10";          // semana o "mayo" seleccionada
 let mayExpanded = false; // si mayo está expandido en chips de semana
 let chartN, chartT;
 
