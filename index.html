@@ -29,287 +29,144 @@
     --r:          10px;
   }
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
   body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    font-size: 14px;
-    line-height: 1.5;
-    min-height: 100vh;
+    background: var(--bg); color: var(--text);
+    font-size: 14px; line-height: 1.5; min-height: 100vh;
   }
-
-  /* ── PAGE HEADER ── */
   .page-header {
     padding: 32px 0 24px;
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    border-bottom: 1px solid var(--border);
-    margin-bottom: 0;
+    display: flex; align-items: baseline; justify-content: space-between;
+    border-bottom: 1px solid var(--border); margin-bottom: 0;
   }
   .page-header h1 {
     font-family: 'Instrument Serif', serif;
-    font-size: 32px;
-    font-weight: 400;
-    letter-spacing: -0.3px;
-    color: var(--text);
-    line-height: 1.2;
+    font-size: 32px; font-weight: 400; letter-spacing: -0.3px;
+    color: var(--text); line-height: 1.2;
   }
-  .page-header h1 span {
-    color: var(--muted);
-    font-style: italic;
-  }
+  .page-header h1 span { color: var(--muted); font-style: italic; }
   .badge-date {
-    font-size: 11px;
-    color: var(--muted);
-    background: var(--surface);
-    border: 1px solid var(--border-md);
-    padding: 4px 10px;
-    border-radius: 20px;
-    white-space: nowrap;
+    font-size: 11px; color: var(--muted);
+    background: var(--surface); border: 1px solid var(--border-md);
+    padding: 4px 10px; border-radius: 20px; white-space: nowrap;
   }
-
-  /* ── LAYOUT ── */
   .container { max-width: 960px; margin: 0 auto; padding: 0 28px 48px; }
-
   .section-label {
-    font-size: 10px;
-    font-weight: 500;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin: 28px 0 10px;
+    font-size: 10px; font-weight: 500; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--muted); margin: 28px 0 10px;
   }
-
-  /* ── KPI ROW ── */
-  .kpi-row {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
-    margin-bottom: 4px;
-  }
-  @media (max-width: 640px) { .kpi-row { grid-template-columns: repeat(2, 1fr); } }
+  .kpi-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; margin-bottom: 4px; }
+  @media (max-width:640px) { .kpi-row { grid-template-columns: repeat(2,1fr); } }
   .kpi {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--r);
-    padding: 14px 16px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--r); padding: 14px 16px;
   }
   .kpi-label { font-size: 11px; color: var(--muted); margin-bottom: 6px; }
   .kpi-val {
     font-family: 'Instrument Serif', serif;
-    font-size: 30px;
-    letter-spacing: -0.5px;
-    color: var(--text);
-    line-height: 1;
+    font-size: 30px; letter-spacing: -0.5px; color: var(--text); line-height: 1;
   }
   .kpi-sub { font-size: 11px; color: var(--faint); margin-top: 4px; }
   .kpi-delta {
-    display: inline-block;
-    font-size: 11px;
-    font-weight: 500;
-    padding: 2px 7px;
-    border-radius: 4px;
-    margin-top: 5px;
+    display: inline-block; font-size: 11px; font-weight: 500;
+    padding: 2px 7px; border-radius: 4px; margin-top: 5px;
   }
   .delta-bad  { background: var(--red-bg);   color: var(--red);   }
   .delta-good { background: var(--green-bg); color: var(--green); }
   .delta-neu  { background: var(--surface2); color: var(--muted); }
-
-  /* ── WEEK FILTER ── */
-  .wk-filter {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin-bottom: 12px;
-  }
+  .wk-filter { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; align-items: center; }
   .wk-btn {
-    font-family: 'Geist Mono', monospace;
-    font-size: 11px;
-    font-weight: 400;
-    padding: 5px 13px;
-    border: 1px solid var(--border-md);
-    border-radius: 20px;
-    background: var(--surface);
-    color: var(--muted);
-    cursor: pointer;
-    transition: all .15s;
-    display: flex;
-    align-items: center;
-    gap: 6px;
+    font-family: 'Geist Mono', monospace; font-size: 11px; font-weight: 400;
+    padding: 5px 13px; border: 1px solid var(--border-md); border-radius: 20px;
+    background: var(--surface); color: var(--muted);
+    cursor: pointer; transition: all .15s;
+    display: flex; align-items: center; gap: 6px;
   }
   .wk-btn:hover { border-color: var(--accent); color: var(--accent); }
-  .wk-btn.active {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: #fff;
-  }
+  .wk-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
   .wk-month-open {
-    background: var(--surface2);
-    border-color: var(--border-md);
-    color: var(--text);
-    font-weight: 500;
+    background: var(--surface2); border-color: var(--border-md);
+    color: var(--text); font-weight: 500;
   }
-  .wk-sub {
-    font-size: 10px;
-    padding: 4px 10px;
-    opacity: .85;
-  }
+  .wk-sub { font-size: 10px; padding: 4px 10px; opacity: .85; }
   .wk-sub.active { opacity: 1; }
   .wk-sep {
-    display: inline-block;
-    width: 1px; height: 22px;
-    background: var(--border-md);
-    align-self: center;
-    margin: 0 2px;
+    display: inline-block; width: 1px; height: 22px;
+    background: var(--border-md); align-self: center; margin: 0 2px;
   }
   .live-dot {
     width: 7px; height: 7px; border-radius: 50%;
-    background: #E8453C;
-    animation: pulse 2s infinite;
-    flex-shrink: 0;
+    background: #E8453C; animation: pulse 2s infinite; flex-shrink: 0;
   }
   @keyframes pulse {
     0%,100% { opacity:1; transform:scale(1); }
     50%      { opacity:.5; transform:scale(1.3); }
   }
-
-  /* ── CHARTS ── */
-  .chart-legend {
-    display: flex;
-    gap: 16px;
-    margin-bottom: 6px;
-  }
-  .legend-item {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    font-size: 11px;
-    color: var(--muted);
-  }
-  .legend-dot {
-    width: 9px; height: 9px; border-radius: 50%;
-  }
-
-  .chart-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    margin-bottom: 4px;
-  }
-  @media (max-width: 600px) { .chart-grid { grid-template-columns: 1fr; } }
+  .chart-legend { display: flex; gap: 16px; margin-bottom: 6px; }
+  .legend-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--muted); }
+  .legend-dot { width: 9px; height: 9px; border-radius: 50%; }
+  .chart-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 4px; }
+  @media (max-width:600px) { .chart-grid { grid-template-columns: 1fr; } }
   .chart-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--r);
-    padding: 16px 18px 14px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--r); padding: 16px 18px 14px;
   }
   .chart-title {
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: .08em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 12px;
+    font-size: 10px; font-weight: 600; letter-spacing: .08em;
+    text-transform: uppercase; color: var(--muted); margin-bottom: 12px;
   }
   canvas { max-height: 200px; }
-
-  /* ── DETAIL TABLE ── */
   .tbl-wrap { overflow-x: auto; margin-bottom: 4px; }
   table { width: 100%; border-collapse: collapse; font-size: 13px; }
   thead th {
-    padding: 8px 12px;
-    text-align: left;
-    border-bottom: 1px solid var(--border);
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: .08em;
-    text-transform: uppercase;
-    color: var(--faint);
-    white-space: nowrap;
+    padding: 8px 12px; text-align: left; border-bottom: 1px solid var(--border);
+    font-size: 10px; font-weight: 600; letter-spacing: .08em;
+    text-transform: uppercase; color: var(--faint); white-space: nowrap;
     background: var(--surface);
   }
   tbody td { padding: 9px 12px; border-bottom: 1px solid var(--border); background: var(--surface); }
   tbody tr:last-child td { border-bottom: none; }
   tbody tr:hover td { background: var(--surface2); }
   .row-sel td { background: var(--surface2) !important; font-weight: 500; }
-
-  /* ── OUTLIERS ── */
   .outlier-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 10px;
-    margin-bottom: 4px;
+    display: grid; grid-template-columns: repeat(auto-fill,minmax(180px,1fr));
+    gap: 10px; margin-bottom: 4px;
   }
   .outlier-card {
-    background: var(--surface);
-    border: 1px solid rgba(163,45,45,.3);
-    border-left: 3px solid var(--red);
-    border-radius: var(--r);
-    padding: 12px 14px;
+    background: var(--surface); border: 1px solid rgba(163,45,45,.3);
+    border-left: 3px solid var(--red); border-radius: var(--r); padding: 12px 14px;
   }
-  .outlier-days {
-    font-family: 'Instrument Serif', serif;
-    font-size: 24px;
-    color: var(--red);
-    line-height: 1;
-  }
+  .outlier-days { font-family: 'Instrument Serif', serif; font-size: 24px; color: var(--red); line-height: 1; }
   .outlier-meta { font-size: 11px; color: var(--muted); margin-top: 2px; }
   .no-outliers {
-    background: var(--green-bg);
-    border: 1px solid rgba(45,107,61,.25);
-    border-radius: var(--r);
-    padding: 11px 16px;
-    font-size: 13px;
-    color: var(--green);
-    margin-bottom: 4px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
+    background: var(--green-bg); border: 1px solid rgba(45,107,61,.25);
+    border-radius: var(--r); padding: 11px 16px;
+    font-size: 13px; color: var(--green); margin-bottom: 4px;
+    display: flex; align-items: center; gap: 8px;
   }
-
-  /* ── CHIPS ── */
   .chip { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 500; }
   .chip-amber { background: var(--amber-bg); color: var(--amber); }
   .chip-green { background: var(--green-bg); color: var(--green); }
   .chip-red   { background: var(--red-bg);   color: var(--red);   }
-
-  /* ── RECHAZOS KPI 3 ── */
-  .kpi-3 {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-    margin-bottom: 10px;
-  }
-  @media (max-width: 500px) { .kpi-3 { grid-template-columns: 1fr 1fr; } }
-
-  .caption {
-    font-size: 11px;
-    color: var(--faint);
-    margin-top: 8px;
-    margin-bottom: 28px;
-  }
+  .kpi-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-bottom: 10px; }
+  @media (max-width:500px) { .kpi-3 { grid-template-columns: 1fr 1fr; } }
+  .caption { font-size: 11px; color: var(--faint); margin-top: 8px; margin-bottom: 28px; }
 </style>
 </head>
 <body>
 <div class="container">
 
-  <!-- PAGE HEADER -->
   <div class="page-header">
     <h1>Médicos &mdash; <span>Choiz Analytics</span></h1>
     <span class="badge-date" id="badge-date">Cargando…</span>
   </div>
 
-  <!-- KPIs -->
   <div class="section-label">Semana seleccionada</div>
   <div class="kpi-row" id="kpi-row"></div>
 
-  <!-- WEEK FILTER -->
   <div class="section-label">Filtrar semana</div>
   <div class="wk-filter" id="wk-filter"></div>
 
-  <!-- CHARTS -->
   <div class="section-label">Tendencia semanal</div>
   <div class="chart-legend">
     <div class="legend-item"><div class="legend-dot" style="background:#2563EB"></div>Promedio</div>
@@ -327,50 +184,34 @@
     </div>
   </div>
 
-  <!-- DETAIL TABLE -->
   <div class="section-label">Detalle semanal</div>
   <div class="tbl-wrap">
     <table>
       <thead>
         <tr>
-          <th>Semana</th>
-          <th>Aprobaciones</th>
-          <th>Promedio</th>
-          <th>Mediana</th>
-          <th>P75</th>
-          <th>P90</th>
-          <th>Máx</th>
-          <th>Tendencia</th>
+          <th>Semana</th><th>Aprobaciones</th><th>Promedio</th>
+          <th>Mediana</th><th>P75</th><th>P90</th><th>Máx</th><th>Tendencia</th>
         </tr>
       </thead>
       <tbody id="detail-tbody"></tbody>
     </table>
   </div>
 
-  <!-- OUTLIERS -->
   <div class="section-label" style="margin-top:20px;">Outliers — semana seleccionada (≥ 7 días)</div>
   <div id="outlier-container"></div>
 
-  <!-- VIDEOLLAMADAS -->
   <div class="section-label">Videollamadas — Mayo 2026</div>
   <div class="tbl-wrap">
     <table>
-      <thead>
-        <tr><th>Ofrecimientos</th><th>Agendadas</th><th>Tasa conversión</th></tr>
-      </thead>
+      <thead><tr><th>Ofrecimientos</th><th>Agendadas</th><th>Tasa conversión</th></tr></thead>
       <tbody>
-        <tr>
-          <td>16</td>
-          <td>7</td>
-          <td><span class="chip chip-amber">44%</span></td>
-        </tr>
+        <tr><td>16</td><td>7</td><td><span class="chip chip-amber">44%</span></td></tr>
       </tbody>
     </table>
   </div>
-  <p class="caption">Fuente: chats médico-paciente · warehouse · período 1–21 mayo 2026</p>
+  <p class="caption">Fuente: chats médico-paciente · warehouse · período 1–31 mayo 2026</p>
 
-  <!-- RECHAZOS -->
-  <div class="section-label">Rechazos — Mayo 2026 (1–28 may)</div>
+  <div class="section-label">Rechazos — Mayo 2026 (1–31 may)</div>
   <div class="kpi-3">
     <div class="kpi">
       <div class="kpi-label">Formularios evaluados</div>
@@ -390,9 +231,7 @@
   </div>
   <div class="tbl-wrap">
     <table>
-      <thead>
-        <tr><th>Motivo de rechazo</th><th style="text-align:right;width:70px">Casos</th></tr>
-      </thead>
+      <thead><tr><th>Motivo de rechazo</th><th style="text-align:right;width:70px">Casos</th></tr></thead>
       <tbody>
         <tr><td>Falta de respuesta a preguntas médicas</td><td style="text-align:right">8</td></tr>
         <tr><td>Paciente no apto para tratamiento oral</td><td style="text-align:right">6</td></tr>
@@ -406,87 +245,79 @@
         <tr><td>Grado avanzado de alopecia, no candidato</td><td style="text-align:right">1</td></tr>
         <tr><td>Paciente con maltrato / se rechaza</td><td style="text-align:right">1</td></tr>
         <tr><td>Otros / sin comentario</td><td style="text-align:right">4</td></tr>
-        <tr style="background:var(--surface2);font-weight:600;">
-          <td>Total</td><td style="text-align:right">37</td>
-        </tr>
+        <tr style="background:var(--surface2);font-weight:600;"><td>Total</td><td style="text-align:right">37</td></tr>
       </tbody>
     </table>
   </div>
-  <p class="caption">Fuente: fct_form_status_history · warehouse · período 1–28 mayo 2026</p>
+  <p class="caption">Fuente: fct_form_status_history · warehouse · período 1–31 mayo 2026</p>
 
-</div><!-- /container -->
+</div>
 
 <script>
-/* ─────────── DATA ─────────── */
+/* ─── DATA ─── */
 const WEEKS = [
-  { key:"w1", label:"7–13 Abr",       month:"may", n:14,  avg:0.91, median:0.77, p75:1.40, p90:1.70, max:2.40  },
-  { key:"w2", label:"14–20 Abr",      month:"may", n:198, avg:0.81, median:0.55, p75:1.02, p90:2.05, max:4.73  },
-  { key:"w3", label:"21–27 Abr",      month:"may", n:308, avg:1.34, median:0.64, p75:1.71, p90:3.85, max:11.09 },
-  { key:"w4", label:"28 Abr–4 May",   month:"may", n:265, avg:1.51, median:0.65, p75:1.96, p90:4.07, max:13.57 },
-  { key:"w5", label:"5–11 May",       month:"may", n:257, avg:1.48, median:0.63, p75:1.51, p90:3.73, max:14.52 },
-  { key:"w6", label:"12–18 May",      month:"may", n:289, avg:1.56, median:0.59, p75:1.39, p90:4.24, max:23.97 },
-  { key:"w7", label:"19–25 May",      month:"may", n:303, avg:1.94, median:0.66, p75:1.64, p90:5.90, max:21.48 },
-  { key:"w8", label:"26 May–1 Jun",   month:"may", n:328, avg:0.94, median:0.59, p75:0.98, p90:1.92, max:7.53  },
-  { key:"w9", label:"1–7 Jun",         month:"jun", n:429, avg:1.09, median:0.56, p75:1.13, p90:2.98, max:9.82  },
-  { key:"w10", label:"8–11 Jun",       month:"jun", n:194, avg:1.15, median:0.52, p75:0.94, p90:3.46, max:11.88, isCurrent:true },
+  { key:"w1",  label:"7–13 Abr",      month:"may", n:14,  avg:0.91, median:0.77, p75:1.40, p90:1.70, max:2.40  },
+  { key:"w2",  label:"14–20 Abr",     month:"may", n:198, avg:0.81, median:0.55, p75:1.02, p90:2.05, max:4.73  },
+  { key:"w3",  label:"21–27 Abr",     month:"may", n:308, avg:1.34, median:0.64, p75:1.71, p90:3.85, max:11.09 },
+  { key:"w4",  label:"28 Abr–4 May",  month:"may", n:265, avg:1.51, median:0.65, p75:1.96, p90:4.07, max:13.57 },
+  { key:"w5",  label:"5–11 May",      month:"may", n:257, avg:1.48, median:0.63, p75:1.51, p90:3.73, max:14.52 },
+  { key:"w6",  label:"12–18 May",     month:"may", n:289, avg:1.56, median:0.59, p75:1.39, p90:4.24, max:23.97 },
+  { key:"w7",  label:"19–25 May",     month:"may", n:303, avg:1.94, median:0.66, p75:1.64, p90:5.90, max:21.48 },
+  { key:"w8",  label:"26 May–1 Jun",  month:"may", n:328, avg:0.94, median:0.59, p75:0.98, p90:1.92, max:7.53  },
+  { key:"w9",  label:"1–7 Jun",       month:"jun", n:429, avg:1.09, median:0.56, p75:1.13, p90:2.98, max:9.82  },
+  { key:"w10", label:"8–14 Jun",      month:"jun", n:372, avg:1.06, median:0.55, p75:1.08, p90:2.56, max:11.91 },
+  { key:"w11", label:"15–18 Jun",     month:"jun", n:187, avg:0.89, median:0.46, p75:0.75, p90:2.03, max:12.96, isCurrent:true },
 ];
 
-// Mayo agregado (suma/promedio ponderado de w1–w8)
+const PACIENTES_SEGUIMIENTO = 14241;
+
 const MAY_WEEKS = WEEKS.filter(w=>w.month==="may");
 const MAY_AGG = (()=>{
-  const totalN = MAY_WEEKS.reduce((s,w)=>s+w.n, 0);
-  const wavg   = MAY_WEEKS.reduce((s,w)=>s+w.avg*w.n, 0) / totalN;
-  // Para mediana/p75/p90/max usamos el promedio ponderado como aproximación
-  const wmed   = MAY_WEEKS.reduce((s,w)=>s+w.median*w.n, 0) / totalN;
-  const wp75   = MAY_WEEKS.reduce((s,w)=>s+w.p75*w.n, 0) / totalN;
-  const wp90   = MAY_WEEKS.reduce((s,w)=>s+w.p90*w.n, 0) / totalN;
-  const wmax   = Math.max(...MAY_WEEKS.map(w=>w.max));
-  return { key:"mayo", label:"Mayo 2026", month:"may", isMayAgg:true,
-    n:totalN, avg:+wavg.toFixed(2), median:+wmed.toFixed(2),
-    p75:+wp75.toFixed(2), p90:+wp90.toFixed(2), max:wmax };
+  const totalN = MAY_WEEKS.reduce((s,w)=>s+w.n,0);
+  return {
+    key:"mayo", label:"Mayo 2026", month:"may", isMayAgg:true,
+    n: totalN,
+    avg:    +(MAY_WEEKS.reduce((s,w)=>s+w.avg*w.n,0)/totalN).toFixed(2),
+    median: +(MAY_WEEKS.reduce((s,w)=>s+w.median*w.n,0)/totalN).toFixed(2),
+    p75:    +(MAY_WEEKS.reduce((s,w)=>s+w.p75*w.n,0)/totalN).toFixed(2),
+    p90:    +(MAY_WEEKS.reduce((s,w)=>s+w.p90*w.n,0)/totalN).toFixed(2),
+    max:    Math.max(...MAY_WEEKS.map(w=>w.max)),
+  };
 })();
 
-const PACIENTES_SEGUIMIENTO = 13877;
-
 const OUTLIERS = {
-  w1:[],w2:[],
-  w3:[
-    { form_id:274500, doctor_id:8,  dias:11.09, fecha:"2026-04-27" },
-  ],
-  w4:[
-    { form_id:276441, doctor_id:8,  dias:13.57, fecha:"2026-05-01" },
-  ],
-  w5:[
-    { form_id:277316, doctor_id:8,  dias:14.52, fecha:"2026-05-11" },
-  ],
+  w1:[], w2:[],
+  w3:[ { form_id:274500, dias:11.09, fecha:"2026-04-27" } ],
+  w4:[ { form_id:276441, dias:13.57, fecha:"2026-05-01" } ],
+  w5:[ { form_id:277316, dias:14.52, fecha:"2026-05-11" } ],
   w6:[
-    { form_id:277605, doctor_id:8,  dias:23.97, fecha:"2026-05-17" },
-    { form_id:277316, doctor_id:8,  dias:21.47, fecha:"2026-05-12" },
-    { form_id:277596, doctor_id:8,  dias:21.02, fecha:"2026-05-14" },
-    { form_id:278166, doctor_id:8,  dias:14.51, fecha:"2026-05-13" },
+    { form_id:277605, dias:23.97, fecha:"2026-05-17" },
+    { form_id:277316, dias:21.47, fecha:"2026-05-12" },
+    { form_id:277596, dias:21.02, fecha:"2026-05-14" },
+    { form_id:278166, dias:14.51, fecha:"2026-05-13" },
   ],
   w7:[
-    { form_id:278106, doctor_id:8,  dias:21.48, fecha:"2026-05-19" },
-    { form_id:278361, doctor_id:9,  dias:19.84, fecha:"2026-05-19" },
-    { form_id:278779, doctor_id:14, dias:17.03, fecha:"2026-05-19" },
-    { form_id:278874, doctor_id:10, dias:16.84, fecha:"2026-05-19" },
-    { form_id:279036, doctor_id:8,  dias:15.70, fecha:"2026-05-19" },
-    { form_id:279393, doctor_id:8,  dias:14.81, fecha:"2026-05-21" },
-    { form_id:279372, doctor_id:8,  dias:13.96, fecha:"2026-05-19" },
-    { form_id:279584, doctor_id:14, dias:13.20, fecha:"2026-05-19" },
-    { form_id:279648, doctor_id:10, dias:12.42, fecha:"2026-05-19" },
-    { form_id:279681, doctor_id:8,  dias:11.98, fecha:"2026-05-19" },
-    { form_id:279856, doctor_id:14, dias:10.66, fecha:"2026-05-19" },
-    { form_id:279913, doctor_id:8,  dias:9.67,  fecha:"2026-05-19" },
-    { form_id:280031, doctor_id:8,  dias:9.37,  fecha:"2026-05-20" },
-    { form_id:276441, doctor_id:8,  dias:8.93,  fecha:"2026-05-19" },
-    { form_id:279960, doctor_id:8,  dias:8.02,  fecha:"2026-05-18" },
+    { form_id:278106, dias:21.48, fecha:"2026-05-19" },
+    { form_id:278361, dias:19.84, fecha:"2026-05-19" },
+    { form_id:278779, dias:17.03, fecha:"2026-05-19" },
+    { form_id:278874, dias:16.84, fecha:"2026-05-19" },
+    { form_id:279036, dias:15.70, fecha:"2026-05-19" },
+    { form_id:279393, dias:14.81, fecha:"2026-05-21" },
+    { form_id:279372, dias:13.96, fecha:"2026-05-19" },
+    { form_id:279584, dias:13.20, fecha:"2026-05-19" },
+    { form_id:279648, dias:12.42, fecha:"2026-05-19" },
+    { form_id:279681, dias:11.98, fecha:"2026-05-19" },
+    { form_id:279856, dias:10.66, fecha:"2026-05-19" },
+    { form_id:279913, dias:9.67,  fecha:"2026-05-19" },
+    { form_id:280031, dias:9.37,  fecha:"2026-05-20" },
+    { form_id:276441, dias:8.93,  fecha:"2026-05-19" },
+    { form_id:279960, dias:8.02,  fecha:"2026-05-18" },
   ],
   w8:[
-    { form_id:281333, doctor_id:8,  dias:7.53, fecha:"2026-05-31" },
-    { form_id:281337, doctor_id:10, dias:7.51, fecha:"2026-05-31" },
-    { form_id:281355, doctor_id:14, dias:7.38, fecha:"2026-05-31" },
-    { form_id:281382, doctor_id:9,  dias:7.04, fecha:"2026-05-31" },
+    { form_id:281333, dias:7.53, fecha:"2026-05-31" },
+    { form_id:281337, dias:7.51, fecha:"2026-05-31" },
+    { form_id:281355, dias:7.38, fecha:"2026-05-31" },
+    { form_id:281382, dias:7.04, fecha:"2026-05-31" },
   ],
   w9:[
     { form_id:281925, dias:7.05, fecha:"2026-06-03" },
@@ -497,61 +328,56 @@ const OUTLIERS = {
   ],
   w10:[
     { form_id:282043, dias:11.88, fecha:"2026-06-09" },
+    { form_id:282376, dias:11.91, fecha:"2026-06-11" },
     { form_id:282563, dias:8.92,  fecha:"2026-06-09" },
     { form_id:282620, dias:8.60,  fecha:"2026-06-09" },
     { form_id:282893, dias:7.51,  fecha:"2026-06-09" },
     { form_id:282822, dias:7.01,  fecha:"2026-06-08" },
   ],
+  w11:[
+    { form_id:283192, dias:12.96, fecha:"2026-06-16" },
+    { form_id:283315, dias:11.52, fecha:"2026-06-16" },
+    { form_id:283434, dias:9.94,  fecha:"2026-06-16" },
+    { form_id:283668, dias:7.70,  fecha:"2026-06-16" },
+  ],
 };
 
-const DOC_NAMES = {
-  8:"Arrieta Dulce", 9:"Bárcenas Diana",
-  10:"Álvarez Christhian", 14:"Salas Andrés",
-};
-
-/* ─────────── STATE ─────────── */
-let sel = "w10";          // semana o "mayo" seleccionada
-let mayExpanded = false; // si mayo está expandido en chips de semana
+/* ─── STATE ─── */
+let sel = "w11";
+let mayExpanded = false;
 let chartN, chartT;
 
-/* ─────────── HELPERS ─────────── */
-function f(v, d=1){ return v==null?"—":(+v).toFixed(d); }
-
-function delta(curr, prev, higherIsBad){
+/* ─── HELPERS ─── */
+function f(v,d=1){ return v==null?"—":(+v).toFixed(d); }
+function delta(curr,prev,higherIsBad){
   if(prev==null) return "";
-  const pct = ((curr-prev)/prev)*100;
-  const up  = pct >= 0;
-  const bad = higherIsBad ? up : !up;
-  const cls = bad ? "delta-bad" : pct===0 ? "delta-neu" : "delta-good";
-  const s   = up ? "▲" : "▼";
-  return `<span class="kpi-delta ${cls}">${s} ${Math.abs(pct).toFixed(1)}% vs sem anterior</span>`;
+  const pct=((curr-prev)/prev)*100;
+  const up=pct>=0;
+  const bad=higherIsBad?up:!up;
+  const cls=bad?"delta-bad":pct===0?"delta-neu":"delta-good";
+  return `<span class="kpi-delta ${cls}">${up?"▲":"▼"} ${Math.abs(pct).toFixed(1)}% vs sem anterior</span>`;
 }
-
-// Devuelve el objeto de datos para la selección actual
 function currentData(){
   if(sel==="mayo") return MAY_AGG;
   return WEEKS.find(x=>x.key===sel);
 }
-
-// Items que muestra la tabla según selección
 function tableRows(){
   if(sel==="mayo") return MAY_WEEKS;
   return WEEKS;
 }
 
-/* ─────────── KPIs ─────────── */
+/* ─── KPIs ─── */
 function renderKPIs(){
-  const w = currentData();
-  // Para delta vs anterior: si es semana de junio, compara con semana anterior; si es mayo agregado, sin delta
-  let prev = null;
+  const w=currentData();
+  let prev=null;
   if(sel!=="mayo"){
-    const i = WEEKS.findIndex(x=>x.key===sel);
-    prev = i>0 ? WEEKS[i-1] : null;
+    const i=WEEKS.findIndex(x=>x.key===sel);
+    prev=i>0?WEEKS[i-1]:null;
   }
-  document.getElementById("kpi-row").innerHTML = [
-    { label:"Aprobaciones",             val:w.n.toLocaleString("es-MX"), sub:"formularios aprobados",  d:prev?delta(w.n, prev.n, false):"" },
-    { label:"Promedio aprobación",      val:f(w.avg)+" d",               sub:"días hábiles",            d:prev?delta(w.avg, prev.avg, true):"" },
-    { label:"Mediana aprobación",       val:f(w.median)+" d",            sub:"p50 — caso típico",        d:prev?delta(w.median, prev.median, true):"" },
+  document.getElementById("kpi-row").innerHTML=[
+    { label:"Aprobaciones",             val:w.n.toLocaleString("es-MX"), sub:"formularios aprobados",   d:prev?delta(w.n,prev.n,false):"" },
+    { label:"Promedio aprobación",      val:f(w.avg)+" d",               sub:"días hábiles",             d:prev?delta(w.avg,prev.avg,true):"" },
+    { label:"Mediana aprobación",       val:f(w.median)+" d",            sub:"p50 — caso típico",         d:prev?delta(w.median,prev.median,true):"" },
     { label:"Pacientes en seguimiento", val:PACIENTES_SEGUIMIENTO.toLocaleString("es-MX"), sub:"estado APPROVED activo", d:"" },
   ].map(k=>`<div class="kpi">
     <div class="kpi-label">${k.label}</div>
@@ -561,78 +387,54 @@ function renderKPIs(){
   </div>`).join("");
 }
 
-/* ─────────── WEEK FILTER ─────────── */
+/* ─── FILTER ─── */
 function renderFilter(){
-  const junWeeks = WEEKS.filter(w=>w.month==="jun");
-  let html = "";
-
-  // Chip Mayo (colapsado o expandido)
-  const mayActive = sel==="mayo" || MAY_WEEKS.some(w=>w.key===sel);
+  const junWeeks=WEEKS.filter(w=>w.month==="jun");
+  let html="";
   if(!mayExpanded){
-    html += `<button class="wk-btn${sel==="mayo"?" active":""}" onclick="pickMayo()">
-      Mayo 2026 <span style="opacity:.6;font-size:10px">▾</span>
-    </button>`;
+    html+=`<button class="wk-btn${sel==="mayo"?" active":""}" onclick="pickMayo()">Mayo 2026 <span style="opacity:.6;font-size:10px">▾</span></button>`;
   } else {
-    // Chip de mes colapsable
-    html += `<button class="wk-btn wk-month-open" onclick="collapseMayo()">
-      Mayo 2026 <span style="opacity:.6;font-size:10px">▴</span>
-    </button>`;
-    // Chips de semanas de mayo
+    html+=`<button class="wk-btn wk-month-open" onclick="collapseMayo()">Mayo 2026 <span style="opacity:.6;font-size:10px">▴</span></button>`;
     MAY_WEEKS.forEach(w=>{
-      html += `<button class="wk-btn wk-sub${w.key===sel?" active":""}" onclick="pick('${w.key}')">
-        ${w.label}
-      </button>`;
+      html+=`<button class="wk-btn wk-sub${w.key===sel?" active":""}" onclick="pick('${w.key}')">${w.label}</button>`;
     });
-    html += `<span class="wk-sep"></span>`;
+    html+=`<span class="wk-sep"></span>`;
   }
-
-  // Chips de junio
   junWeeks.forEach(w=>{
-    html += `<button class="wk-btn${w.key===sel?" active":""}" onclick="pick('${w.key}')">
-      ${w.label}
-      ${w.isCurrent?`<span class="live-dot"></span>`:""}
+    html+=`<button class="wk-btn${w.key===sel?" active":""}" onclick="pick('${w.key}')">
+      ${w.label}${w.isCurrent?`<span class="live-dot"></span>`:""}
     </button>`;
   });
-
-  document.getElementById("wk-filter").innerHTML = html;
+  document.getElementById("wk-filter").innerHTML=html;
 }
 
-/* ─────────── TABLE ─────────── */
+/* ─── TABLE ─── */
 function renderTable(){
-  const rows = tableRows();
-  document.getElementById("detail-tbody").innerHTML = rows.map((w,i)=>{
-    const p = i>0?rows[i-1]:null;
-    const isSel = sel==="mayo" ? false : w.key===sel;
-    const d = p ? ((w.avg-p.avg)/p.avg*100) : null;
-    let tend = "—";
+  const rows=tableRows();
+  document.getElementById("detail-tbody").innerHTML=rows.map((w,i)=>{
+    const p=i>0?rows[i-1]:null;
+    const isSel=sel!=="mayo"&&w.key===sel;
+    const d=p?((w.avg-p.avg)/p.avg*100):null;
+    let tend="—";
     if(d!==null){
-      const bad = d>0;
-      const cls = bad?"delta-bad":"delta-good";
-      tend = `<span class="kpi-delta ${cls}">${d>=0?"▲":"▼"} ${Math.abs(d).toFixed(1)}%</span>`;
+      const cls=d>0?"delta-bad":"delta-good";
+      tend=`<span class="kpi-delta ${cls}">${d>=0?"▲":"▼"} ${Math.abs(d).toFixed(1)}%</span>`;
     }
     return `<tr class="${isSel?"row-sel":""}">
       <td>${w.label}${w.isCurrent?` <span class="chip chip-amber" style="font-size:9px;padding:1px 6px;margin-left:4px">en curso</span>`:""}</td>
-      <td>${w.n}</td>
-      <td>${f(w.avg)} d</td>
-      <td>${f(w.median)} d</td>
-      <td>${f(w.p75)} d</td>
-      <td>${f(w.p90)} d</td>
-      <td>${f(w.max)} d</td>
+      <td>${w.n}</td><td>${f(w.avg)} d</td><td>${f(w.median)} d</td>
+      <td>${f(w.p75)} d</td><td>${f(w.p90)} d</td><td>${f(w.max)} d</td>
       <td>${tend}</td>
     </tr>`;
   }).join("");
 }
 
-/* ─────────── OUTLIERS ─────────── */
+/* ─── OUTLIERS ─── */
 function renderOutliers(){
-  // Para mayo agregado, mostrar todos los outliers de mayo
-  let list = [];
-  if(sel==="mayo"){
-    MAY_WEEKS.forEach(w=>{ list = list.concat(OUTLIERS[w.key]||[]); });
-  } else {
-    list = OUTLIERS[sel]||[];
-  }
-  const el = document.getElementById("outlier-container");
+  let list=[];
+  if(sel==="mayo") MAY_WEEKS.forEach(w=>{ list=list.concat(OUTLIERS[w.key]||[]); });
+  else list=OUTLIERS[sel]||[];
+  const el=document.getElementById("outlier-container");
   if(!list.length){
     el.innerHTML=`<div class="no-outliers">✓ Sin outliers (≥ 7 días) en este período</div>`;
     return;
@@ -645,90 +447,51 @@ function renderOutliers(){
     </div>`).join("")}</div>`;
 }
 
-/* ─────────── CHARTS ─────────── */
-const chartColors = {
-  gridLine: "rgba(0,0,0,.07)",
-  tickColor: "#9B9590",
-};
-const baseOpts = {
+/* ─── CHARTS ─── */
+const cOpts={
   responsive:true, maintainAspectRatio:true,
   plugins:{ legend:{ display:false } },
   scales:{
-    x:{ ticks:{ color:chartColors.tickColor, font:{size:10}, maxRotation:35 }, grid:{ color:chartColors.gridLine } },
-    y:{ ticks:{ color:chartColors.tickColor, font:{size:10} }, grid:{ color:chartColors.gridLine } },
+    x:{ ticks:{ color:"#9B9590", font:{size:10}, maxRotation:35 }, grid:{ color:"rgba(0,0,0,.07)" } },
+    y:{ ticks:{ color:"#9B9590", font:{size:10} },                  grid:{ color:"rgba(0,0,0,.07)" } },
   }
 };
-
-// Los charts siempre muestran todas las semanas (mayo desglosado + junio)
-function chartWeeks(){ return WEEKS; }
-
-function buildCharts(){
-  const cw = chartWeeks();
-  const labels = cw.map(w=>w.label);
-  chartN = new Chart(document.getElementById("chart-n"),{
-    type:"bar",
-    data:{
-      labels,
-      datasets:[{
-        data: cw.map(w=>w.n),
-        backgroundColor: cw.map(w=>barColor(w)),
-        borderRadius: 4,
-      }]
-    },
-    options:{ ...baseOpts }
-  });
-  chartT = new Chart(document.getElementById("chart-t"),{
-    type:"line",
-    data:{
-      labels,
-      datasets:[
-        { label:"Promedio", data:cw.map(w=>w.avg),    borderColor:"#2563EB", backgroundColor:"rgba(37,99,235,.06)", tension:.3, pointRadius:3, pointHoverRadius:5, fill:true },
-        { label:"Mediana",  data:cw.map(w=>w.median), borderColor:"#16A34A", backgroundColor:"transparent",         tension:.3, pointRadius:3, borderDash:[4,3] },
-        { label:"P90",      data:cw.map(w=>w.p90),    borderColor:"#D97706", backgroundColor:"transparent",         tension:.3, pointRadius:3, borderDash:[2,4] },
-      ]
-    },
-    options:{ ...baseOpts }
-  });
-}
-
 function barColor(w){
-  if(sel==="mayo") return w.month==="may" ? "#2563EB" : "#BFCFE7";
-  return w.key===sel ? "#2563EB" : "#BFCFE7";
+  if(sel==="mayo") return w.month==="may"?"#2563EB":"#BFCFE7";
+  return w.key===sel?"#2563EB":"#BFCFE7";
 }
-
+function buildCharts(){
+  const labels=WEEKS.map(w=>w.label);
+  chartN=new Chart(document.getElementById("chart-n"),{
+    type:"bar",
+    data:{ labels, datasets:[{ data:WEEKS.map(w=>w.n), backgroundColor:WEEKS.map(w=>barColor(w)), borderRadius:4 }] },
+    options:{ ...cOpts }
+  });
+  chartT=new Chart(document.getElementById("chart-t"),{
+    type:"line",
+    data:{ labels, datasets:[
+      { label:"Promedio", data:WEEKS.map(w=>w.avg),    borderColor:"#2563EB", backgroundColor:"rgba(37,99,235,.06)", tension:.3, pointRadius:3, fill:true },
+      { label:"Mediana",  data:WEEKS.map(w=>w.median), borderColor:"#16A34A", backgroundColor:"transparent",         tension:.3, pointRadius:3, borderDash:[4,3] },
+      { label:"P90",      data:WEEKS.map(w=>w.p90),    borderColor:"#D97706", backgroundColor:"transparent",         tension:.3, pointRadius:3, borderDash:[2,4] },
+    ]},
+    options:{ ...cOpts }
+  });
+}
 function refreshBar(){
-  const cw = chartWeeks();
-  chartN.data.datasets[0].backgroundColor = cw.map(w=>barColor(w));
+  chartN.data.datasets[0].backgroundColor=WEEKS.map(w=>barColor(w));
   chartN.update();
 }
 
-/* ─────────── PICK ACTIONS ─────────── */
-function pick(k){
-  sel=k; mayExpanded=MAY_WEEKS.some(w=>w.key===k)||mayExpanded;
-  renderFilter(); renderKPIs(); renderTable(); renderOutliers(); refreshBar();
-}
+/* ─── ACTIONS ─── */
+function pick(k){ sel=k; mayExpanded=MAY_WEEKS.some(w=>w.key===k)||mayExpanded; render(); }
+function pickMayo(){ sel="mayo"; mayExpanded=false; render(); }
+function collapseMayo(){ mayExpanded=false; if(MAY_WEEKS.some(w=>w.key===sel)) sel="mayo"; render(); }
+function render(){ renderFilter(); renderKPIs(); renderTable(); renderOutliers(); refreshBar(); }
 
-function pickMayo(){
-  sel="mayo"; mayExpanded=false;
-  renderFilter(); renderKPIs(); renderTable(); renderOutliers(); refreshBar();
-}
-
-function collapseMayo(){
-  mayExpanded=false;
-  if(MAY_WEEKS.some(w=>w.key===sel)) sel="mayo";
-  renderFilter(); renderKPIs(); renderTable(); renderOutliers(); refreshBar();
-}
-
-/* ─────────── INIT ─────────── */
-const now = new Date();
-document.getElementById("badge-date").textContent =
-  `Actualizado: ${now.getDate()}/${now.getMonth()+1}/${now.getFullYear()}`;
-
-renderFilter();
-renderKPIs();
-buildCharts();
-renderTable();
-renderOutliers();
+/* ─── INIT ─── */
+const now=new Date();
+document.getElementById("badge-date").textContent=`Actualizado: ${now.getDate()}/${now.getMonth()+1}/${now.getFullYear()}`;
+renderFilter(); renderKPIs(); buildCharts(); renderTable(); renderOutliers();
 </script>
 </body>
 </html>
